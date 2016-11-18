@@ -1,0 +1,22 @@
+{
+  "name": "pi-ad2",
+  "version": "0.1.0",
+  "description": "A replacement monitor for the Schwinn Airdyne AD2, built for a Raspberry Pi.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickmomrik/pi-ad2.git"
+  },
+  "keywords": [
+    "Airdyne",
+    "AD2",
+    "Raspberry",
+    "Pi"
+  ],
+  "author": "Nick Momrik",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/nickmomrik/pi-ad2/issues"
+  },
+  "homepage": "https://github.com/nickmomrik/pi-ad2#readme"
+}
