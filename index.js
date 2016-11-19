@@ -49,7 +49,6 @@ function calculateRPMs() {
 
 function everySecond() {
     var cadence = calculateRPMs(),
-        watts,
         newCalories,
         newDistance,
         speed,
@@ -59,7 +58,8 @@ function everySecond() {
         second++;
         out = second + ' seconds: ';
 
-        // From the manual - The Console pauses if the pedaling is less than 5 RPM for 3 seconds.
+        // From the AD2 manual: "The Console pauses if the pedaling is less than 5 RPM for 3 seconds."
+        // Use 2 instead
         if ( Date.now() - spinTimes[ spinTimes.length - 1 ] > 2000 ) {
             spinTimes = [];
             return;
@@ -74,16 +74,14 @@ function everySecond() {
             newDistance = speed / 60 / 60;
             distance += newDistance;
 
-            out = out + _.round( newCalories, 7) + ' new cals ';
             out = out + Math.floor( calories ) + ' cals ';
-            //out = out + _.round(newDistance, 7) + ' new miles ';
             out = out + _.round( distance, 3 ) + ' miles ';
             out = out + _.round( speed, 2 ) + ' mph ';
             out = out + cadence + ' RPMs ';
-            //out = out + watts + ' watts';
             console.log(out);
 
             /*
+            // Attempt to hold a steady cadence for 36 seconds and use data with misc/trendline.html
             var doAvg = 36;
             var len = spinTimes.length;
             if (doAvg == second){
