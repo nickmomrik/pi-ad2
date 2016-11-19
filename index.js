@@ -31,11 +31,6 @@ function calculateRPMs() {
         return 0;
     }
 
-    /*
-     Should this do some type of error correction in case a beep was missed?
-     Like if the avg rpms varies too much, insert another beep in the sequence.
-     */
-
     if ( len < maxUse ) {
         start = 0;
         intervals = len - 1;
