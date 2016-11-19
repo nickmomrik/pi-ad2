@@ -65,14 +65,8 @@ function everySecond() {
             return;
         }
 
-        /*
-            Calorie formula from https://unyieldingly.com/2013/02/airdyne-erg-trending/
-
-            But calories don't match up with the AD2.
-         */
         if ( cadence > 0 ) {
-            //newCalories = ( ( ( ( 0.172 * Math.pow( cadence, 2 ) ) - ( 12.16 * cadence ) + 271.3 ) * 3.9 ) / 60  ) / 60;
-            newCalories = ( ( ( ( ( 0.172 ) * Math.pow( cadence, 2 ) ) - ( 12.16 * cadence ) + 271.3 ) * 3.9 ) / 60  ) / 60;
+            newCalories = 0.04 * Math.exp( 0.031 * cadence ); // 0.041e^(0.031x)
             calories += newCalories;
 
             speed = cadence / ( 10 / 3 );
@@ -80,7 +74,7 @@ function everySecond() {
             newDistance = speed / 60 / 60;
             distance += newDistance;
 
-            //out = out + _.round( newCalories, 7) + ' new cals ';
+            out = out + _.round( newCalories, 7) + ' new cals ';
             out = out + Math.floor( calories ) + ' cals ';
             //out = out + _.round(newDistance, 7) + ' new miles ';
             out = out + _.round( distance, 3 ) + ' miles ';
@@ -88,6 +82,14 @@ function everySecond() {
             out = out + cadence + ' RPMs ';
             //out = out + watts + ' watts';
             console.log(out);
+
+            /*
+            var doAvg = 36;
+            var len = spinTimes.length;
+            if (doAvg == second){
+                console.log('RPM average: ' + _.round( ( 60 / ( ( spinTimes[ len - 1 ] - spinTimes[ 0 ] ) / (len-1) / 1000 ) ), 4 ))
+            }
+            */
         }
     }
 }
