@@ -38,3 +38,6 @@ jspm_packages
 
 # PhpStorm
 .idea/
+
+# File used by clap-detector
+input.wav

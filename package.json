@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/nickmomrik/pi-ad2/issues"
   },
-  "homepage": "https://github.com/nickmomrik/pi-ad2#readme"
+  "homepage": "https://github.com/nickmomrik/pi-ad2#readme",
+  "dependencies": {
+    "clap-detector": "0.4.0",
+    "lodash": "4.17.2"
+  }
 }
