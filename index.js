@@ -4,8 +4,8 @@ var clapDetector = require('clap-detector'),
 clapDetector.start({
     DETECTION_PERCENTAGE_START : '5%',
     DETECTION_PERCENTAGE_END: '5%',
-    CLAP_AMPLITUDE_THRESHOLD: 0.5,
-    CLAP_ENERGY_THRESHOLD: 0.5,
+    CLAP_AMPLITUDE_THRESHOLD: 0.1,
+    CLAP_ENERGY_THRESHOLD: 0.8,
     CLAP_MAX_DURATION: 100
 });
 
