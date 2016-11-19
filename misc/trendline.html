@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trendline</title>
+</head>
+<body>
+<div id="chart_div"></div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['RPMs', 'Calories'],
+            [42.5706, 0.138888888888889],
+            [51.4083, 0.194444444444444],
+            [61.3277, 0.305555555555556],
+            [69.9572, 0.388888888888889],
+            [80.807, 0.527777777777778],
+            [99.8004, 0.833333333333333]
+        ]);
+
+        var options = {
+            title: 'Calories by RPMs',
+            hAxis: {title: 'RPMs', minValue: 30, maxValue: 150},
+            vAxis: {title: 'Calories', minValue: 0, maxValue: 1},
+            trendlines: {
+                0: {
+                    type: 'exponential',
+                    visibleInLegend: true,
+                }
+            }
+        };
+
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
+</body>
+</html>
