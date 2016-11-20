@@ -73,7 +73,7 @@
             socket.emit('start');
 
             jQuery('button').prop('disabled', true);
-            jQuery('#pause').prop('disabled', false);
+            jQuery('#pause, #stop').prop('disabled', false);
 
             socket.on('data', function(data){
                 for (var key in data) {
@@ -93,7 +93,7 @@
             socket.emit('resume');
 
             jQuery('button').prop('disabled', true);
-            jQuery('#pause').prop('disabled', false);
+            jQuery('#pause, #stop').prop('disabled', false);
         });
 
         jQuery('#stop').on('click', function(){
