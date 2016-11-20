@@ -23,7 +23,7 @@ setInterval( everySecond, 1000 );
 
 function calculateRPMs() {
     var len = spinTimes.length,
-        maxUse = 4,
+        maxUse = 6,
         start,
         intervals;
 
