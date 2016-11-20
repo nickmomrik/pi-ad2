@@ -14,10 +14,22 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
     console.log('connection');
 
-    socket.on('start', function(socket){
+    socket.on('start', function(){
         console.log('start');
 
         AD2.start(sendData);
+    }).on('pause', function(){
+        console.log('pause');
+
+        AD2.pause();
+    }).on('resume', function() {
+        console.log('resume');
+
+        AD2.resume();
+    }).on('stop', function(){
+            console.log('stop');
+
+            process.exit();
     });
 });
 

@@ -19,48 +19,87 @@
             font-size: 24px;
             font-weight: bold;
             text-align: center;
-            width: 210px;
-            height: 60px;
+            width: 203px;
+            height: 50px;
             float: left;
-            display: none;
         }
         div span {
             font-weight: normal;
         }
-        div#time {
-            width: 450px;
-            height: 30px;
+        #time {
+            height: 26px;
+        }
+        #time,
+        #buttons {
+            width: 436px;
         }
         button {
             font-size: 32px;
-            padding: 20px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <button type="button" id="start">Start</button>
-    <div id="time"><span>00:00</span></div>
-    <div id="calories">Calories<br /><span>0</span></div>
-    <div id="distance">Miles<br /><span>0</span></div>
-    <div id="speed">MPH<br /><span>0</span></div>
-    <div id="rpms">RPMs<br /><span>0</span></div>
+    <div id="time"><span></span></div>
+    <div id="calories">Calories<br /><span></span></div>
+    <div id="distance">Miles<br /><span></span></div>
+    <div id="speed">MPH<br /><span></span></div>
+    <div id="rpms">RPMs<br /><span></span></div>
+    <div id="buttons">
+        <button type="button" id="start">Start</button>
+        <button type="button" id="pause">Pause</button>
+        <button type="button" id="resume">Resume</button>
+        <button type="button" id="stop">Stop</button>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/jquery-3.1.1.min.js"></script>
     <script>
         var socket = io();
 
+        function init() {
+            jQuery('#time span').text('00:00');
+            jQuery('#calories span').text(0);
+            jQuery('#distance span').text(0);
+            jQuery('#speed span').text(0);
+            jQuery('#rpms span').text(0);
+
+            jQuery('#start').show().css('display', 'inline')
+        }
+
+        init();
+
         jQuery('#start').on('click', function(){
             socket.emit('start');
 
-            jQuery(this).hide();
-            jQuery('div').show();
+            jQuery('#buttons button').hide();
+            jQuery('#pause').show().css('display', 'inline')
 
             socket.on('data', function(data){
                 for (var key in data) {
                     jQuery('#' + key + ' span').text(data[key]);
                 }
             });
+        });
+
+        jQuery('#pause').on('click', function(){
+            socket.emit('pause');
+
+            jQuery('#buttons button').hide();
+            jQuery('#stop, #resume').show().css('display', 'inline')
+        });
+
+        jQuery('#resume').on('click', function(){
+            socket.emit('resume');
+
+            jQuery('#buttons button').hide();
+            jQuery('#pause').show().css('display', 'inline')
+        });
+
+        jQuery('#stop').on('click', function(){
+            socket.emit('stop');
+
+            jQuery('#buttons button').hide();
         });
     </script>
 </body>
