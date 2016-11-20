@@ -32,10 +32,14 @@
         #time,
         #buttons {
             width: 436px;
+            height: 32px;
+        }
+        #time {
+            font-size: 32px;
         }
         button {
-            font-size: 32px;
-            display: none;
+            font-size: 20px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -47,9 +51,9 @@
     <div id="rpms">RPMs<br /><span></span></div>
     <div id="buttons">
         <button type="button" id="start">Start</button>
-        <button type="button" id="pause">Pause</button>
-        <button type="button" id="resume">Resume</button>
-        <button type="button" id="stop">Stop</button>
+        <button type="button" id="pause" disabled>Pause</button>
+        <button type="button" id="resume" disabled>Resume</button>
+        <button type="button" id="stop" disabled>Stop</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -57,23 +61,19 @@
     <script>
         var socket = io();
 
-        function init() {
-            jQuery('#time span').text('00:00');
-            jQuery('#calories span').text(0);
-            jQuery('#distance span').text(0);
-            jQuery('#speed span').text(0);
-            jQuery('#rpms span').text(0);
+        jQuery('#time span').text('00:00');
+        jQuery('#calories span').text(0);
+        jQuery('#distance span').text(0);
+        jQuery('#speed span').text(0);
+        jQuery('#rpms span').text(0);
 
-            jQuery('#start').show().css('display', 'inline')
-        }
-
-        init();
+        jQuery('#start').show().css('display', 'inline')
 
         jQuery('#start').on('click', function(){
             socket.emit('start');
 
-            jQuery('#buttons button').hide();
-            jQuery('#pause').show().css('display', 'inline')
+            jQuery('button').prop('disabled', true);
+            jQuery('#pause').prop('disabled', false);
 
             socket.on('data', function(data){
                 for (var key in data) {
@@ -85,21 +85,21 @@
         jQuery('#pause').on('click', function(){
             socket.emit('pause');
 
-            jQuery('#buttons button').hide();
-            jQuery('#stop, #resume').show().css('display', 'inline')
+            jQuery('button').prop('disabled', true);
+            jQuery('#resume, #stop').prop('disabled', false);
         });
 
         jQuery('#resume').on('click', function(){
             socket.emit('resume');
 
-            jQuery('#buttons button').hide();
-            jQuery('#pause').show().css('display', 'inline')
+            jQuery('button').prop('disabled', true);
+            jQuery('#pause').prop('disabled', false);
         });
 
         jQuery('#stop').on('click', function(){
             socket.emit('stop');
 
-            jQuery('#buttons button').hide();
+            jQuery('button').prop('disabled', true);
         });
     </script>
 </body>
