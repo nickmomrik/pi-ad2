@@ -39,7 +39,7 @@ function calculateRPMs() {
         intervals = maxUse - 1;
     }
 
-    return _.round( ( 60 / ( ( spinTimes[ len - 1 ] - spinTimes[ start ] ) / intervals / 1000 ) ), 4 );
+    return _.round( ( 60 / ( ( spinTimes[ len - 1 ] - spinTimes[ start ] ) / intervals / 1000 ) ) );
 }
 
 function everySecond() {
