@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <title>Pi AD2</title>
+    <style>
+        body {
+            width: 480px;
+            height: 320px;
+            overflow: hidden;
+            background: #333333
+        }
+        div {
+            background: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 4px;
+            font-family: "Courier New";
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            width: 210px;
+            height: 60px;
+            float: left;
+            display: none;
+        }
+        div span {
+            font-weight: normal;
+        }
+        div#time {
+            width: 450px;
+            height: 30px;
+        }
+        button {
+            font-size: 32px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" id="start">Start</button>
+    <div id="time"><span>00:00</span></div>
+    <div id="calories">Calories<br /><span>0</span></div>
+    <div id="distance">Miles<br /><span>0</span></div>
+    <div id="speed">MPH<br /><span>0</span></div>
+    <div id="rpms">RPMs<br /><span>0</span></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/jquery-3.1.1.min.js"></script>
+    <script>
+        var socket = io();
+
+        jQuery('#start').on('click', function(){
+            socket.emit('start');
+
+            jQuery(this).hide();
+            jQuery('div').show();
+
+            socket.on('data', function(data){
+                for (var key in data) {
+                    jQuery('#' + key + ' span').text(data[key]);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
