@@ -57,7 +57,7 @@ function everySecond() {
         out = min + ':' + _.padStart(sec, 2, '0') + ' - ';
 
         // From the AD2 manual: "The Console pauses if the pedaling is less than 5 RPM for 3 seconds."
-        // Use 2 instead
+        // Use 2 instead because you can't even come close to going that slow and still register.
         if ( Date.now() - spinTimes[ spinTimes.length - 1 ] > 2000 ) {
             spinTimes = [];
             return;
