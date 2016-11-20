@@ -64,7 +64,7 @@ function everySecond() {
         }
 
         if ( cadence > 0 ) {
-            newCalories = 0.065 * Math.exp( 0.025 * cadence ); // y = 0.065e^(0.025x)
+            newCalories = 0.059 * Math.exp( 0.026 * cadence ); // y = 0.059e^(0.026x)
             calories += newCalories;
 
             speed = cadence / ( 10 / 3 );
