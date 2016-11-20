@@ -77,15 +77,6 @@ function everySecond() {
             out = out + _.round( speed, 2 ) + ' mph ';
             out = out + cadence + ' RPMs ';
             console.log(out);
-
-            /*
-            // Attempt to hold a steady cadence for 36 seconds and use data with misc/trendline.html
-            var doAvg = 36;
-            var len = spinTimes.length;
-            if (doAvg == second){
-                console.log('RPM average: ' + _.round( ( 60 / ( ( spinTimes[ len - 1 ] - spinTimes[ 0 ] ) / (len-1) / 1000 ) ), 4 ))
-            }
-            */
         }
     }
 }
