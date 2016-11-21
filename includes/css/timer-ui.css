@@ -53,6 +53,7 @@ body {
 #buttons img:active {
     transform: translateY(2px) translateX(2px);
 }
-span.metric {
+span.metric,
+span.watts {
     display: none;
 }

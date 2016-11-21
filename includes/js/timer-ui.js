@@ -18,7 +18,8 @@ jQuery('#play').on('click', function() {
                 jQuery('#distance span.info.metric').text(convert_to_metric(data['distance'], 3));
                 jQuery('#speed span.info.imperial').text(data['speed']);
                 jQuery('#speed span.info.metric').text(convert_to_metric(data['speed'], 1));
-                jQuery('#rpms span.info').text(data['rpms']);
+                jQuery('#rpms span.info.rpms').text(data['rpms']);
+                jQuery('#rpms span.info.watts').text(data['watts']);
             });
 
             jQuery('#play').removeClass('start');
@@ -56,6 +57,11 @@ jQuery('#exit').on('click', function() {
 jQuery('#distance, #speed').on('click', function() {
     jQuery('body').toggleClass('metric imperial');
     jQuery('span.metric, span.imperial').toggle();
+});
+
+jQuery('#rpms').on('click', function() {
+    jQuery('body').toggleClass('rpms watts');
+    jQuery('span.rpms, span.watts').toggle();
 });
 
 function convert_to_metric(number, precision) {
