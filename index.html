@@ -9,73 +9,90 @@
             overflow: hidden;
             background: #333333
         }
-        div {
-            background: #ffffff;
+        #ui div {
+            background: #dddddd;
             border: 1px solid #000000;
             border-radius: 5px;
-            padding: 10px;
+            padding: 6px;
             margin: 4px;
             font-family: "Courier New";
-            font-size: 24px;
             text-align: center;
             width: 203px;
-            height: 50px;
+            height: 88px;
             float: left;
         }
-        div span.title {
+        .title {
+            font-size: 24px;
             font-weight: bold;
         }
-        #time {
-            height: 26px;
-        }
-        #time,
-        #buttons {
+        #ui div#time {
             width: 436px;
-            height: 32px;
+            height: 54px;
+            vertical-align: middle;
         }
-        #time {
-            font-size: 32px;
+        #time .info {
+            width: 120px;
         }
-        button {
-            font-size: 20px;
+        .info {
+            font-size: 48px;
+        }
+        #buttons {
+            float: right;
+        }
+        #buttons span {
             margin-right: 10px;
         }
-        #exit,
+        #buttons span.disabled {
+            opacity: 0.2;
+        }
+        #buttons img {
+            height: 48px;
+            width: 48px;
+        }
         span.metric {
             display: none;
         }
     </style>
 </head>
 <body class="imperial">
-    <div id="time">
-        <span class="info"></span>
-    </div>
-    <div id="calories">
-        <span class="title">Calories</span><br />
-        <span class="info"></span>
-    </div>
-    <div id="distance">
-        <span class="title imperial">Miles</span>
-        <span class="title metric">km</span><br />
-        <span class="info imperial"></span>
-        <span class="info metric"></span>
-    </div>
-    <div id="speed">
-        <span class="title imperial">MPH</span>
-        <span class="title metric">km/h</span><br />
-        <span class="info imperial"></span>
-        <span class="info metric"></span>
-    </div>
-    <div id="rpms">
-        <span class="title">RPM</span><br />
-        <span class="info"></span>
-    </div>
-    <div id="buttons">
-        <button type="button" id="start">Start</button>
-        <button type="button" id="pause" disabled>Pause</button>
-        <button type="button" id="resume" disabled>Resume</button>
-        <button type="button" id="stop" disabled>Stop</button>
-        <button type="button" id="exit">Exit</button>
+    <div id="ui">
+        <div id="time">
+            <span class="info"></span>
+            <span id="buttons">
+                <span id="play" class="start">
+                    <img src="/images/play.svg" />
+                </span>
+                <span id="pause" class="disabled">
+                    <img src="/images/pause.svg" />
+                </span>
+                <span id="stop" class="disabled">
+                    <img src="/images/stop.svg" />
+                </span>
+                <span id="exit">
+                    <img src="/images/close.svg" />
+                </span>
+            </span>
+        </div>
+        <div id="calories">
+            <span class="title">Calories</span><br />
+            <span class="info"></span>
+        </div>
+        <div id="distance">
+            <span class="title imperial">Miles</span>
+            <span class="title metric">km</span><br />
+            <span class="info imperial"></span>
+            <span class="info metric"></span>
+        </div>
+        <div id="speed">
+            <span class="title imperial">MPH</span>
+            <span class="title metric">km/h</span><br />
+            <span class="info imperial"></span>
+            <span class="info metric"></span>
+        </div>
+        <div id="rpms">
+            <span class="title">RPM</span><br />
+            <span class="info"></span>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -83,52 +100,57 @@
     <script>
         var socket = io();
 
-        jQuery('#time span').text('00:00');
+        jQuery('#time span.info').text('00:00');
         jQuery('#calories span.info').text(0);
         jQuery('#distance span.info').text(0);
         jQuery('#speed span.info').text(0);
         jQuery('#rpms span.info').text(0);
 
-        jQuery('#start').on('click', function() {
-            socket.emit('start');
+        jQuery('#play').on('click', function() {
+            if ( ! jQuery(this).hasClass('disabled')) {
+                if (jQuery('#play').hasClass('start')) {
+                    socket.emit('start');
 
-            jQuery('button').prop('disabled', true);
-            jQuery('#pause, #stop').prop('disabled', false);
+                    socket.on('data', function (data) {
+                        jQuery('#time span.info').text(data['time']);
+                        jQuery('#calories span.info').text(data['calories']);
+                        jQuery('#distance span.info.imperial').text(data['distance']);
+                        jQuery('#distance span.info.metric').text(convert_to_metric(data['distance'], 3));
+                        jQuery('#speed span.info.imperial').text(data['speed']);
+                        jQuery('#speed span.info.metric').text(convert_to_metric(data['speed'], 1));
+                        jQuery('#rpms span.info').text(data['rpms']);
+                    });
 
-            socket.on('data', function(data) {
-                jQuery('#time span.info').text(data['time']);
-                jQuery('#calories span.info').text(data['calories']);
-                jQuery('#distance span.info.imperial').text(data['distance']);
-                jQuery('#distance span.info.metric').text(convert_to_metric(data['distance'], 3));
-                jQuery('#speed span.info.imperial').text(data['speed']);
-                jQuery('#speed span.info.metric').text(convert_to_metric(data['speed'], 1));
-                jQuery('#rpms span.info').text(data['rpms']);
-            });
+                    jQuery('#play').removeClass('start');
+                }
+
+                jQuery('#play').addClass('disabled');
+                jQuery('#pause, #stop').removeClass('disabled');
+            }
         });
 
         jQuery('#pause').on('click', function() {
-            socket.emit('pause');
+            if ( ! jQuery(this).hasClass('disabled')) {
+                socket.emit('pause');
 
-            jQuery('button').prop('disabled', true);
-            jQuery('#resume, #stop').prop('disabled', false);
-        });
-
-        jQuery('#resume').on('click', function() {
-            socket.emit('resume');
-
-            jQuery('button').prop('disabled', true);
-            jQuery('#pause, #stop').prop('disabled', false);
+                jQuery('#pause').addClass('disabled');
+                jQuery('#play').removeClass('disabled');
+            }
         });
 
         jQuery('#stop').on('click', function() {
-            socket.emit('stop');
+            if ( ! jQuery(this).hasClass('disabled')) {
+                socket.emit('stop');
 
-            jQuery('button').hide();
-            jQuery('#exit').prop('disabled', false).css('display', 'inline');
+                jQuery('#play, #pause, #stop').addClass('disabled');
+            }
         });
 
         jQuery('#exit').on('click', function() {
             socket.emit('exit');
+
+            jQuery('#ui').hide();
+            jQuery('body').css('background-color', '#000000');
         });
 
         jQuery('#distance, #speed').on('click', function() {
