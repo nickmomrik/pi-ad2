@@ -17,7 +17,7 @@
             margin: 4px;
             font-family: "Courier New";
             text-align: center;
-            width: 203px;
+            width: 210px;
             height: 88px;
             float: left;
         }
@@ -26,8 +26,8 @@
             font-weight: bold;
         }
         #ui div#time {
-            width: 436px;
-            height: 54px;
+            width: 442px;
+            height: 60px;
             vertical-align: middle;
         }
         #time .info {
@@ -40,7 +40,10 @@
             float: right;
         }
         #buttons span {
-            margin-right: 10px;
+            margin-left: 10px;
+            -webkit-transition: all 1s;
+            -moz-transition: all 1s;
+            transition: all 1s;
         }
         #buttons span.disabled {
             opacity: 0.2;
@@ -48,6 +51,12 @@
         #buttons img {
             height: 48px;
             width: 48px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            box-shadow: 2px 2px 2px #333;
+        }
+        #buttons img:active {
+            transform: translateY(2px) translateX(2px);
         }
         span.metric {
             display: none;
