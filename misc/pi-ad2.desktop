@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Pi-AD2
+Comment=Launch Pi-AD2
+Exec=node '/home/pi/pi-ad2/index.js'
+Icon=galculator
