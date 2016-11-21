@@ -52,5 +52,5 @@ http.listen(3000, function(){
 });
 
 if ('Linux' == os.type()){
-    var chromium = proc.spawn('chromium-browser --noerrdialogs --kiosk http://localhost:3000');
+    var chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:3000']);
 }
