@@ -2,66 +2,7 @@
 <html>
 <head>
     <title>Pi AD2</title>
-    <style>
-        body {
-            width: 480px;
-            height: 320px;
-            overflow: hidden;
-            background: #333333
-        }
-        #ui div {
-            background: #dddddd;
-            border: 1px solid #000000;
-            border-radius: 5px;
-            padding: 6px;
-            margin: 4px;
-            font-family: "Courier New";
-            text-align: center;
-            width: 210px;
-            height: 88px;
-            float: left;
-        }
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        #ui div#time {
-            width: 442px;
-            height: 60px;
-            vertical-align: middle;
-        }
-        #time .info {
-            width: 120px;
-        }
-        .info {
-            font-size: 48px;
-        }
-        #buttons {
-            float: right;
-        }
-        #buttons span {
-            margin-left: 10px;
-            -webkit-transition: all 1s;
-            -moz-transition: all 1s;
-            transition: all 1s;
-        }
-        #buttons span.disabled {
-            opacity: 0.2;
-        }
-        #buttons img {
-            height: 48px;
-            width: 48px;
-            border: 1px solid #999;
-            border-radius: 5px;
-            box-shadow: 2px 2px 2px #333;
-        }
-        #buttons img:active {
-            transform: translateY(2px) translateX(2px);
-        }
-        span.metric {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/css/timer-ui.css">
 </head>
 <body class="imperial">
     <div id="ui">
@@ -105,71 +46,7 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/jquery-3.1.1.min.js"></script>
-    <script>
-        var socket = io();
-
-        jQuery('#time span.info').text('00:00');
-        jQuery('#calories span.info').text(0);
-        jQuery('#distance span.info').text(0);
-        jQuery('#speed span.info').text(0);
-        jQuery('#rpms span.info').text(0);
-
-        jQuery('#play').on('click', function() {
-            if ( ! jQuery(this).hasClass('disabled')) {
-                if (jQuery('#play').hasClass('start')) {
-                    socket.emit('start');
-
-                    socket.on('data', function (data) {
-                        jQuery('#time span.info').text(data['time']);
-                        jQuery('#calories span.info').text(data['calories']);
-                        jQuery('#distance span.info.imperial').text(data['distance']);
-                        jQuery('#distance span.info.metric').text(convert_to_metric(data['distance'], 3));
-                        jQuery('#speed span.info.imperial').text(data['speed']);
-                        jQuery('#speed span.info.metric').text(convert_to_metric(data['speed'], 1));
-                        jQuery('#rpms span.info').text(data['rpms']);
-                    });
-
-                    jQuery('#play').removeClass('start');
-                }
-
-                jQuery('#play').addClass('disabled');
-                jQuery('#pause, #stop').removeClass('disabled');
-            }
-        });
-
-        jQuery('#pause').on('click', function() {
-            if ( ! jQuery(this).hasClass('disabled')) {
-                socket.emit('pause');
-
-                jQuery('#pause').addClass('disabled');
-                jQuery('#play').removeClass('disabled');
-            }
-        });
-
-        jQuery('#stop').on('click', function() {
-            if ( ! jQuery(this).hasClass('disabled')) {
-                socket.emit('stop');
-
-                jQuery('#play, #pause, #stop').addClass('disabled');
-            }
-        });
-
-        jQuery('#exit').on('click', function() {
-            socket.emit('exit');
-
-            jQuery('#ui').hide();
-            jQuery('body').css('background-color', '#000000');
-        });
-
-        jQuery('#distance, #speed').on('click', function() {
-            jQuery('body').toggleClass('metric imperial');
-            jQuery('span.metric, span.imperial').toggle();
-        });
-
-        function convert_to_metric(number, precision) {
-            return (number / 0.62137).toFixed(precision);
-        }
-    </script>
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/js/timer-ui.js"></script>
 </body>
 </html>

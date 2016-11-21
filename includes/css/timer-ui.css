@@ -1,0 +1,58 @@
+body {
+    width: 480px;
+    height: 320px;
+    overflow: hidden;
+    background: #333333
+}
+#ui div {
+    background: #dddddd;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    padding: 6px;
+    margin: 4px;
+    font-family: "Courier New";
+    text-align: center;
+    width: 210px;
+    height: 88px;
+    float: left;
+}
+.title {
+    font-size: 24px;
+    font-weight: bold;
+}
+#ui div#time {
+    width: 442px;
+    height: 60px;
+    vertical-align: middle;
+}
+#time .info {
+    width: 120px;
+}
+.info {
+    font-size: 48px;
+}
+#buttons {
+    float: right;
+}
+#buttons span {
+    margin-left: 10px;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    transition: all 1s;
+}
+#buttons span.disabled {
+    opacity: 0.2;
+}
+#buttons img {
+    height: 48px;
+    width: 48px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px #333;
+}
+#buttons img:active {
+    transform: translateY(2px) translateX(2px);
+}
+span.metric {
+    display: none;
+}
