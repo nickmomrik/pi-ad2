@@ -154,15 +154,8 @@
         });
 
         jQuery('#distance, #speed').on('click', function() {
-            if ( jQuery('body').hasClass('metric')) {
-                jQuery('body').removeClass('metric').addClass('imperial');
-                jQuery('span.metric').hide();
-                jQuery('span.imperial').show();
-            } else {
-                jQuery('body').removeClass('imperial').addClass('metric');
-                jQuery('span.imperial').hide();
-                jQuery('span.metric').show();
-            }
+            jQuery('body').toggleClass('metric imperial');
+            jQuery('span.metric, span.imperial').toggle();
         });
 
         function convert_to_metric(number, precision) {
