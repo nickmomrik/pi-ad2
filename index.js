@@ -5,7 +5,8 @@ var AD2     = require('./lib/ad2'),
     io      = require('socket.io')(http)
     path    = require('path'),
     os      = require('os'),
-    proc    = require('child_process');
+    proc    = require('child_process'),
+    debug = require('debug')('pi-ad2');
 
 app.use(express.static(path.join(__dirname, 'includes')));
 
@@ -14,28 +15,29 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket) {
-    console.log('connection');
+    debug('connection');
 
     socket.on('start', function() {
-        console.log('start');
+        debug('start');
 
         AD2.start(sendData);
     }).on('pause', function() {
-        console.log('pause');
+        debug('pause');
 
         AD2.pause();
     }).on('resume', function() {
-        console.log('resume');
+        debug('resume');
 
         AD2.resume();
     }).on('stop', function() {
-        console.log('stop');
+        debug('stop');
 
         AD2.pause();
     }).on('exit', function() {
-        console.log('exit');
+        debug('exit');
 
         if ('Linux' == os.type()) {
+            debug('Kill chromium on Linux');
             chromium.kill('SIGINT');
         }
 
@@ -48,9 +50,10 @@ function sendData(data) {
 }
 
 http.listen(3000, function(){
-    console.log('listening on *:3000');
+    debug('listening on *:3000');
 });
 
-if ('Linux' == os.type()){
+if ('Linux' == os.type()) {
+    debug('Starting chromium on Linux');
     var chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:3000']);
 }
