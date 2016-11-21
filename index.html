@@ -17,14 +17,13 @@
             margin: 4px;
             font-family: "Courier New";
             font-size: 24px;
-            font-weight: bold;
             text-align: center;
             width: 203px;
             height: 50px;
             float: left;
         }
-        div span {
-            font-weight: normal;
+        div span.title {
+            font-weight: bold;
         }
         #time {
             height: 26px;
@@ -41,19 +40,42 @@
             font-size: 20px;
             margin-right: 10px;
         }
+        #exit,
+        span.metric {
+            display: none;
+        }
     </style>
 </head>
-<body>
-    <div id="time"><span></span></div>
-    <div id="calories">Calories<br /><span></span></div>
-    <div id="distance">Miles<br /><span></span></div>
-    <div id="speed">MPH<br /><span></span></div>
-    <div id="rpms">RPMs<br /><span></span></div>
+<body class="imperial">
+    <div id="time">
+        <span class="info"></span>
+    </div>
+    <div id="calories">
+        <span class="title">Calories</span><br />
+        <span class="info"></span>
+    </div>
+    <div id="distance">
+        <span class="title imperial">Miles</span>
+        <span class="title metric">km</span><br />
+        <span class="info imperial"></span>
+        <span class="info metric"></span>
+    </div>
+    <div id="speed">
+        <span class="title imperial">MPH</span>
+        <span class="title metric">km/h</span><br />
+        <span class="info imperial"></span>
+        <span class="info metric"></span>
+    </div>
+    <div id="rpms">
+        <span class="title">RPM</span><br />
+        <span class="info"></span>
+    </div>
     <div id="buttons">
         <button type="button" id="start">Start</button>
         <button type="button" id="pause" disabled>Pause</button>
         <button type="button" id="resume" disabled>Resume</button>
         <button type="button" id="stop" disabled>Stop</button>
+        <button type="button" id="exit">Exit</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -62,45 +84,68 @@
         var socket = io();
 
         jQuery('#time span').text('00:00');
-        jQuery('#calories span').text(0);
-        jQuery('#distance span').text(0);
-        jQuery('#speed span').text(0);
-        jQuery('#rpms span').text(0);
+        jQuery('#calories span.info').text(0);
+        jQuery('#distance span.info').text(0);
+        jQuery('#speed span.info').text(0);
+        jQuery('#rpms span.info').text(0);
 
-        jQuery('#start').show().css('display', 'inline')
-
-        jQuery('#start').on('click', function(){
+        jQuery('#start').on('click', function() {
             socket.emit('start');
 
             jQuery('button').prop('disabled', true);
             jQuery('#pause, #stop').prop('disabled', false);
 
-            socket.on('data', function(data){
-                for (var key in data) {
-                    jQuery('#' + key + ' span').text(data[key]);
-                }
+            socket.on('data', function(data) {
+                jQuery('#time span.info').text(data['time']);
+                jQuery('#calories span.info').text(data['calories']);
+                jQuery('#distance span.info.imperial').text(data['distance']);
+                jQuery('#distance span.info.metric').text(convert_to_metric(data['distance'], 3));
+                jQuery('#speed span.info.imperial').text(data['speed']);
+                jQuery('#speed span.info.metric').text(convert_to_metric(data['speed'], 1));
+                jQuery('#rpms span.info').text(data['rpms']);
             });
         });
 
-        jQuery('#pause').on('click', function(){
+        jQuery('#pause').on('click', function() {
             socket.emit('pause');
 
             jQuery('button').prop('disabled', true);
             jQuery('#resume, #stop').prop('disabled', false);
         });
 
-        jQuery('#resume').on('click', function(){
+        jQuery('#resume').on('click', function() {
             socket.emit('resume');
 
             jQuery('button').prop('disabled', true);
             jQuery('#pause, #stop').prop('disabled', false);
         });
 
-        jQuery('#stop').on('click', function(){
+        jQuery('#stop').on('click', function() {
             socket.emit('stop');
 
-            jQuery('button').prop('disabled', true);
+            jQuery('button').hide();
+            jQuery('#exit').prop('disabled', false).css('display', 'inline');
         });
+
+        jQuery('#exit').on('click', function() {
+            socket.emit('exit');
+        });
+
+        jQuery('#distance, #speed').on('click', function() {
+            if ( jQuery('body').hasClass('metric')) {
+                jQuery('body').removeClass('metric').addClass('imperial');
+                jQuery('span.metric').hide();
+                jQuery('span.imperial').show();
+            } else {
+                jQuery('body').removeClass('imperial').addClass('metric');
+                jQuery('span.imperial').hide();
+                jQuery('span.metric').show();
+            }
+        });
+
+        function convert_to_metric(number, precision) {
+            return (number / 0.62137).toFixed(precision);
+        }
     </script>
 </body>
 </html>
