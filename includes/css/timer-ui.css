@@ -15,6 +15,7 @@ body {
     width: 210px;
     height: 88px;
     float: left;
+    box-shadow: 2px 2px 6px #777777;
 }
 .title {
     font-size: 24px;
@@ -46,9 +47,10 @@ body {
 #buttons img {
     height: 48px;
     width: 48px;
-    border: 1px solid #999;
+    border: 1px solid #999999;
     border-radius: 5px;
-    box-shadow: 2px 2px 2px #333;
+    box-shadow: 2px 2px 2px #333333;
+    background-color: #cccccc;
 }
 #buttons img:active {
     transform: translateY(2px) translateX(2px);
