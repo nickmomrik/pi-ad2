@@ -57,9 +57,6 @@ body {
     box-shadow: 2px 2px 2px #333333;
     background-color: #cccccc;
 }
-#buttons img:active {
-    transform: translateY(2px) translateX(2px);
-}
 span.metric,
 span.watts {
     display: none;
