@@ -25,8 +25,8 @@ io.on('connection', function(socket) {
         debug('pause');
 
         AD2.pause();
-    }).on('resume', function() {
-        debug('resume');
+    }).on('play', function() {
+        debug('play');
 
         AD2.resume();
     }).on('stop', function() {
