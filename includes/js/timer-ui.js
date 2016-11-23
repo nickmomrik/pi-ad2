@@ -23,6 +23,8 @@ jQuery('#play').on('click', function() {
             });
 
             jQuery('#play').removeClass('start');
+        } else {
+            socket.emit('play');
         }
 
         jQuery('#play').addClass('disabled');
