@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/nickmomrik/pi-ad2#readme",
   "dependencies": {
-    "clap-detector": "0.4.0",
+    "clap-detector": "nickmomrik/clap-detector",
     "debug": "2.3.3",
     "express": "4.14.0",
     "lodash": "4.17.2",
