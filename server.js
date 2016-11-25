@@ -87,5 +87,5 @@ io.on('connection', function(socket) {
 
 if ('Linux' == os.type()) {
   debug('Starting chromium on Linux');
-  var chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:3000']);
+  var chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:' + port]);
 }
