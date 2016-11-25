@@ -1,12 +1,19 @@
 import React from 'react';
 import {Button, IconButton} from 'react-toolbox/lib/button';
 import { Card, CardTitle, CardText } from 'react-toolbox/lib/card';
+const socket = io();
 
 import 'style.scss';
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
+
+        socket.on('spins', function (spins) {
+            console.log(spins);
+        });
+
+        socket.emit('start');
     }
 
     render() {

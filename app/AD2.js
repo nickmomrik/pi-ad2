@@ -1,6 +1,5 @@
 var clapDetector = require('clap-detector'),
-    _ = require('lodash')
-    debugAD2 = require('debug')('ad2');
+    _ = require('lodash');
 
 var ad2 = (function() {
     var spinTimes = [],
@@ -93,7 +92,7 @@ var ad2 = (function() {
             clapDetector.onClap(function(history) {
                 debugAD2('detected');
 
-                spinTimes = _.map(history, 'time');;
+                spinTimes = _.map(history, 'time');
             });
         },
 

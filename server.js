@@ -40,20 +40,19 @@ if (isDeveloping) {
   });
 }
 
-const AD2 = require('./app/AD2');
-const http = require('http').Server(app);
+const http = app.listen(port, function onStart(err) {
+  if (err) {
+    console.log(err);
+  }
+  console.info('==> Listening on port %s.', port);
+});
+
 const io = require('socket.io')(http);
 const os = require('os');
 const proc = require('child_process');
 const debug = require('debug')('pi-ad2');
-
-app.listen(port, function onStart(err) {
-  if (err) {
-    console.log(err);
-  }
-  console.info('==> 🌎 Listening on port %s.', port);
-});
-
+const clapDetector = require('clap-detector');
+const _ = require('lodash');
 
 io.on('connection', function(socket) {
   debug('connection');
@@ -61,19 +60,19 @@ io.on('connection', function(socket) {
   socket.on('start', function() {
     debug('start');
 
-    AD2.start(sendData);
-  }).on('pause', function() {
-    debug('pause');
+      clapDetector.start({
+          DETECTION_PERCENTAGE_START: '5%',
+          DETECTION_PERCENTAGE_END: '5%',
+          CLAP_AMPLITUDE_THRESHOLD: 0.1,
+          CLAP_ENERGY_THRESHOLD: 0.8,
+          CLAP_MAX_DURATION: 100
+      });
 
-    AD2.pause();
-  }).on('play', function() {
-    debug('play');
+      clapDetector.onClap(function(history) {
+          debug('detected');
 
-    AD2.resume();
-  }).on('stop', function() {
-    debug('stop');
-
-    AD2.pause();
+          io.emit('spins', _.map(history, 'time'));
+      });
   }).on('exit', function() {
     debug('exit');
 
@@ -85,10 +84,6 @@ io.on('connection', function(socket) {
     process.exit();
   });
 });
-
-function sendData(data) {
-  io.emit('data', data);
-}
 
 if ('Linux' == os.type()) {
   debug('Starting chromium on Linux');
