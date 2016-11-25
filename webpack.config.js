@@ -29,25 +29,28 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-        "presets": ["react", "es2015", "stage-0", "react-hmre"]
-      }
-    }, {
-      test: /\.json?$/,
-      loader: 'json'
-    }, {
-      test: /\.css$/,
-      loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]'
-    }]
+    loaders: [
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: 'babel',
+          query: {
+            "presets": ["react", "es2015", "stage-0", "react-hmre"]
+          }
+        }, {
+          test: /\.json?$/,
+          loader: 'json'
+        }, {
+            test: /\.css$/,
+            loaders: ['style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]', 'sass']
+        }, {
+            test: /\.scss$/,
+            loaders: ['style', 'css', 'sass']
+        }
+    ]
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
-    root: [
-      path.resolve('./app')
-    ]
+    modulesDirectories: ['node_modules', './app']
   }
 };
