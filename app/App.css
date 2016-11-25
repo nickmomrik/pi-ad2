@@ -3,11 +3,11 @@
     -moz-user-select: -moz-none;
     user-select: none;
 }
-body {
+#ui {
     width: 480px;
     height: 320px;
     overflow: hidden;
-    background: #333333
+    background: #333333;
 }
 #ui div {
     background: #dddddd;

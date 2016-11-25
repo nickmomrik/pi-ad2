@@ -53,16 +53,16 @@ jQuery('#exit').on('click', function() {
     socket.emit('exit');
 
     jQuery('#ui').hide();
-    jQuery('body').css('background-color', '#000000');
+    jQuery('#ui').css('background-color', '#000000');
 });
 
 jQuery('#distance, #speed').on('click', function() {
-    jQuery('body').toggleClass('metric imperial');
+    jQuery('#ui').toggleClass('metric imperial');
     jQuery('span.metric, span.imperial').toggle();
 });
 
 jQuery('#rpms').on('click', function() {
-    jQuery('body').toggleClass('rpms watts');
+    jQuery('#ui').toggleClass('rpms watts');
     jQuery('span.rpms, span.watts').toggle();
 });
 
