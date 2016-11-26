@@ -5,8 +5,13 @@ import StopIcon from 'material-ui/svg-icons/av/stop';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
-
 const socket = io();
+const style = {
+    margin: 12,
+    minWidth: 60,
+    height: 48,
+    width: 48,
+};
 
 export default class Timer extends React.Component {
     constructor(props) {
@@ -164,12 +169,14 @@ export default class Timer extends React.Component {
                         onClick={this.play}
                         disabled={this.state.playStart != 0}
                         icon={<PlayIcon/>}
+                        style={style}
                     />
                     <RaisedButton
                         tooltip="Stop"
                         onClick={this.stop}
                         disabled={this.state.playStart == 0 || this.state.stopped}
                         icon={<StopIcon/>}
+                        style={style}
                     />
                 </Card>
                 <TimerInfo
