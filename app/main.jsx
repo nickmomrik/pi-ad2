@@ -9,6 +9,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
+import styles from "./style.scss";
+
 ReactDOM.render((
     <Router history={hashHistory}>
         <Route path="/" component={Splash}/>
