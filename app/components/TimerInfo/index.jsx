@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardTitle } from 'react-toolbox/lib/card';
+import {Card, CardTitle} from 'material-ui/Card';
 
 import 'style.scss';
 

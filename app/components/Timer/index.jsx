@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button, IconButton} from 'react-toolbox/lib/button';
-import { Card, CardTitle, CardText } from 'react-toolbox/lib/card';
+import RaisedButton from 'material-ui/RaisedButton';
+import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
 
@@ -159,8 +159,8 @@ export default class Timer extends React.Component {
             <Card>
                 <Card>
                     <CardTitle title={this.time()} />
-                    <Button raised onClick={this.play} disabled={this.state.playStart != 0}>Play</Button>
-                    <Button raised onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped}>Stop</Button>
+                    <RaisedButton onClick={this.play} disabled={this.state.playStart != 0} label="Play" />
+                    <RaisedButton onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped} label="Stop" />
                 </Card>
                 <TimerInfo
                     info={this.calories()}
