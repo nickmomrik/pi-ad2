@@ -5,6 +5,8 @@ import ExitIcon from 'material-ui/svg-icons/action/exit-to-app';
 import {grey100, grey400} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
 import _ from 'lodash';
 const socket = io();
 
@@ -23,7 +25,7 @@ const inlineStyles = {
     timeTitle: {
         padding : 0,
     },
-    iconStyle: {
+    margins: {
         margin: 12,
     },
 };
@@ -32,30 +34,22 @@ export default class Timer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            playStart : 0,
-            stopped   : false,
-            spins     : [],
-            seconds   : 0,
-            calories  : 0,
-            miles     : 0.000,
-            metric    : true,
+            playStart: 0,
+            stopped: false,
+            confirmOpen: false,
+            spins: [],
+            seconds: 0,
+            calories: 0,
+            miles: 0.000,
+            metric: true,
             effortType: 'rpm',
-            rpms      : 0,
+            rpms: 0,
         };
-
-        this.timerClick = this.timerClick.bind(this);
-        this.toggleDistanceType = this.toggleDistanceType.bind(this);
-        this.toggleEffortType = this.toggleEffortType.bind(this);
     }
 
-    timerClick() {
-        if (this.state.stopped) {
-            socket.emit('exit');
-        } else if (this.state.playStart) {
-            this.setState({stopped: true});
-
-            // Catch up on the last second before stopping.
-            setTimeout(() => clearInterval(this.interval), 1000);
+    timerClick = () => {
+        if (this.state.stopped || this.state.playStart) {
+            this.setState({confirmOpen: true});
         } else {
             socket.emit('start');
 
@@ -70,7 +64,26 @@ export default class Timer extends React.Component {
                 })
             }.bind(this));
         }
-    }
+    };
+
+    handleConfirm = () => {
+        console.log('confirm');
+        this.handleCancel();
+
+        if (this.state.stopped) {
+            socket.emit('exit');
+        } else {
+            this.setState({stopped: true});
+
+            // Catch up on the last second before stopping.
+            setTimeout(() => clearInterval(this.interval), 1000);
+        }
+    };
+
+    handleCancel = () => {
+        console.log('cancel');
+        this.setState({confirmOpen: false});
+    };
 
     everySecond() {
         let newState = {seconds: this.state.seconds + 1};
@@ -118,17 +131,17 @@ export default class Timer extends React.Component {
         this.setState(newState);
     }
 
-    toggleDistanceType() {
+    toggleDistanceType = () => {
         this.setState(prevState => ({
             metric: !prevState.metric
         }));
-    }
+    };
 
-    toggleEffortType() {
+    toggleEffortType = () => {
         this.setState(prevState => ({
             effortType: ('rpm' == prevState.effortType) ? 'watts' : 'rpm'
         }));
-    }
+    };
 
     time() {
         let min = Math.floor(this.state.seconds / 60);
@@ -179,20 +192,35 @@ export default class Timer extends React.Component {
         let actionButton;
         if (this.state.stopped) {
             actionButton = (<ExitIcon
-                style={inlineStyles.iconStyle}
+                style={inlineStyles.margins}
                 color={grey400}
             />);
         } else if (this.state.playStart) {
             actionButton = (<StopIcon
-                style={inlineStyles.iconStyle}
+                style={inlineStyles.margins}
                 color={grey400}
             />);
         } else {
             actionButton = (<PlayIcon
-                style={inlineStyles.iconStyle}
+                style={inlineStyles.margins}
                 color={grey400}
             />);
         }
+
+        const actions = [
+            <RaisedButton
+                label="No"
+                primary={true}
+                onClick={this.handleCancel}
+                style={inlineStyles.margins}
+            />,
+            <RaisedButton
+                label="Yes"
+                primary={true}
+                onClick={this.handleConfirm}
+                style={inlineStyles.margins}
+            />,
+        ];
 
         return (
             <div className="container">
@@ -235,6 +263,15 @@ export default class Timer extends React.Component {
                         style={inlineStyles.background}
                     />
                 </div>
+                <Dialog
+                    title="Please Confirm"
+                    actions={actions}
+                    modal={false}
+                    open={this.state.confirmOpen}
+                    onRequestClose={this.handleCancel}
+                >
+                    Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
+                </Dialog>
             </div>
         );
     }
