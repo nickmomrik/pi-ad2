@@ -1,6 +1,7 @@
 import React from 'react';
 import {Card, CardTitle} from 'material-ui/Card';
 import classNames from 'classnames';
+import _ from 'lodash';
 
 import styles from "./style.scss";
 const inlineStyles = {
@@ -23,8 +24,9 @@ export default class TimerInfo extends React.Component {
     }
 
     render() {
+        console.log(_.merge(this.props.style,inlineStyles.infoTitle));
         return (
-            <Card className={classNames(this.props.className)} containerStyle={inlineStyles.container}>
+            <Card className={classNames(this.props.className)} containerStyle={inlineStyles.container} style={this.props.style}>
                 <CardTitle
                     title={this.props.info.toString()}
                     subtitle={this.props.label}

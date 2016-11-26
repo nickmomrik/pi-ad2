@@ -2,7 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
-import {grey300} from 'material-ui/styles/colors';
+import {grey100, grey400} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
@@ -10,12 +10,15 @@ const socket = io();
 
 import styles from "./style.scss";
 const inlineStyles = {
+    background: {
+        background: grey100,
+    },
     title: {
         fontSize: 42,
     },
     time: {
-        padding : 0,
-        width   : '100%',
+        padding: 0,
+        width: '100%',
     },
     timeTitle: {
         padding : 0,
@@ -176,7 +179,7 @@ export default class Timer extends React.Component {
         return (
             <div className="container">
                 <div className="row" onClick={this.timerPlayStop}>
-                    <Card className="column" containerStyle={inlineStyles.time}>
+                    <Card className="column" containerStyle={inlineStyles.time} style={inlineStyles.background}>
                         <CardTitle
                             title={this.time()}
                             className="time"
@@ -185,11 +188,11 @@ export default class Timer extends React.Component {
                         />
                         <PlayIcon
                             style={inlineStyles.iconStyle}
-                            color={grey300}
+                            color={grey400}
                         />
                         <StopIcon
                             style={inlineStyles.iconStyle}
-                            color={grey300}
+                            color={grey400}
                         />
                     </Card>
                 </div>
@@ -198,24 +201,27 @@ export default class Timer extends React.Component {
                         info={this.calories()}
                         label="Calories"
                         className="column"
+                        style={inlineStyles.background}
                     />
                     <TimerInfo
                         info={this.effort()}
                         label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
                         className="column"
+                        style={inlineStyles.background}
                     />
                 </div>
-                <div className="row" onClick={this.toggleDistanceType}
-                >
+                <div className="row" onClick={this.toggleDistanceType}>
                     <TimerInfo
                         info={this.speed()}
                         label={this.state.metric ? 'km/h' : 'MPH'}
                         className="column"
+                        style={inlineStyles.background}
                     />
                     <TimerInfo
                         info={this.distance()}
                         label={this.state.metric ? 'km' : 'Miles'}
                         className="column"
+                        style={inlineStyles.background}
                     />
                 </div>
             </div>
