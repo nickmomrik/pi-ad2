@@ -186,14 +186,16 @@ export default class Timer extends React.Component {
                             titleStyle={inlineStyles.title}
                             style={inlineStyles.timeTitle}
                         />
-                        <PlayIcon
-                            style={inlineStyles.iconStyle}
-                            color={grey400}
-                        />
-                        <StopIcon
-                            style={inlineStyles.iconStyle}
-                            color={grey400}
-                        />
+                        {this.state.playStart ?
+                            <StopIcon
+                                style={inlineStyles.iconStyle}
+                                color={this.state.stopped ? grey100 : grey400}
+                            /> :
+                            <PlayIcon
+                                style={inlineStyles.iconStyle}
+                                color={grey400}
+                            />
+                        }
                     </Card>
                 </div>
                 <div className="row" onClick={this.toggleEffortType}>
