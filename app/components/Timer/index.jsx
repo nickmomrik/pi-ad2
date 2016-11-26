@@ -12,7 +12,7 @@ export default class Timer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            played    : false,
+            playStart : 0,
             stopped   : false,
             spins     : [],
             seconds   : 0,
@@ -30,32 +30,49 @@ export default class Timer extends React.Component {
     }
 
     play() {
-        this.setState({played: true});
+        socket.emit('start');
+
+        this.setState({playStart: Date.now()});
+
+        // Update the timer every second
+        this.interval = setInterval(() => this.everySecond(), 1000);
 
         socket.on('spins', function (spins) {
             this.setState({
                 spins: spins
             })
         }.bind(this));
-
-        socket.emit('start');
-
-        this.interval = setInterval(() => this.everySecond(), 1000);
     }
 
     stop() {
         this.setState({stopped: true});
 
-        clearInterval(this.interval);
+        // Catch up on the last second before stopping.
+        setTimeout(() => clearInterval(this.interval), 1000);
     }
 
     everySecond() {
-        let newState = {
-            seconds: this.state.seconds + 1
-        };
+        let newState = {seconds: this.state.seconds + 1};
+        let spinTimes = this.state.spins;
+        let now = Date.now();
 
-        if (this.state.spins.length > 1) {
-            let len = this.state.spins.length;
+        // Filter out any spins that were recorded before starting and any in the last second
+        spinTimes = _.filter(spinTimes, function(time) {
+           return time > this.state.playStart && this.state.playStart < (now - 1000);
+        }.bind(this));
+
+        // Skip if we haven't been spinning for at least 2 seconds
+        if ( now - this.state.playStart < 2000) {
+            spinTimes = [];
+        } else if (spinTimes.len > 1) {
+            // Skip if the last spin was more than 3 second ago.
+            if (now - _.last(spinTimes) > 3000) {
+                spinTimes = [];
+            }
+        }
+
+        if (spinTimes.length > 1) {
+            let len = spinTimes.length;
             let maxUse = 4;
             let start = 0;
             let intervals = len - 1;
@@ -66,7 +83,7 @@ export default class Timer extends React.Component {
                     intervals = maxUse - 1;
                 }
 
-                newState.rpms = _.round(( 60 / ( ( this.state.spins[len - 1] - this.state.spins[start] ) / intervals / 1000 ) ));
+                newState.rpms = _.round(( 60 / ( ( spinTimes[len - 1] - spinTimes[start] ) / intervals / 1000 ) ));
 
                 if (newState.rpms > 0) {
                     // y = 9.396E-5x^2 + 6.583E-4x - 0.084 from Google chart trendline
@@ -142,8 +159,8 @@ export default class Timer extends React.Component {
             <Card>
                 <Card>
                     <CardTitle title={this.time()} />
-                    <Button raised onClick={this.play} disabled={this.state.played}>Play</Button>
-                    <Button raised onClick={this.stop} disabled={!this.state.played || this.state.stopped}>Stop</Button>
+                    <Button raised onClick={this.play} disabled={this.state.playStart != 0}>Play</Button>
+                    <Button raised onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped}>Stop</Button>
                 </Card>
                 <TimerInfo
                     info={this.calories()}
