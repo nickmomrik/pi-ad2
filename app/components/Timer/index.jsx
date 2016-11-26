@@ -138,7 +138,7 @@ export default class Timer extends React.Component {
             distance = this.convert_miles_to_km(distance, 3);
         }
 
-        return _.round(distance, 3).toFixed(3)
+        return _.round(distance, 2).toFixed(2)
     }
 
     milesSpeed() {
