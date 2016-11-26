@@ -2,6 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
+import {grey300} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
@@ -18,6 +19,9 @@ const inlineStyles = {
     },
     timeTitle: {
         padding : 0,
+    },
+    iconStyle: {
+        margin: 12,
     },
 };
 
@@ -36,32 +40,33 @@ export default class Timer extends React.Component {
             rpms      : 0,
         };
 
-        this.play = this.play.bind(this);
-        this.stop = this.stop.bind(this);
+        this.timerPlayStop = this.timerPlayStop.bind(this);
         this.toggleDistanceType = this.toggleDistanceType.bind(this);
         this.toggleEffortType = this.toggleEffortType.bind(this);
     }
 
-    play() {
-        socket.emit('start');
+    timerPlayStop() {
+        if (!this.state.stopped) {
+            if (this.state.playStart) {
+                this.setState({stopped: true});
 
-        this.setState({playStart: Date.now()});
+                // Catch up on the last second before stopping.
+                setTimeout(() => clearInterval(this.interval), 1000);
+            } else {
+                socket.emit('start');
 
-        // Update the timer every second
-        this.interval = setInterval(() => this.everySecond(), 1000);
+                this.setState({playStart: Date.now()});
 
-        socket.on('spins', function (spins) {
-            this.setState({
-                spins: spins
-            })
-        }.bind(this));
-    }
+                // Update the timer every second
+                this.interval = setInterval(() => this.everySecond(), 1000);
 
-    stop() {
-        this.setState({stopped: true});
-
-        // Catch up on the last second before stopping.
-        setTimeout(() => clearInterval(this.interval), 1000);
+                socket.on('spins', function (spins) {
+                    this.setState({
+                        spins: spins
+                    })
+                }.bind(this));
+            }
+        }
     }
 
     everySecond() {
@@ -170,7 +175,7 @@ export default class Timer extends React.Component {
     render() {
         return (
             <div className="container">
-                <div className="row">
+                <div className="row" onClick={this.timerPlayStop}>
                     <Card className="column" containerStyle={inlineStyles.time}>
                         <CardTitle
                             title={this.time()}
@@ -178,23 +183,13 @@ export default class Timer extends React.Component {
                             titleStyle={inlineStyles.title}
                             style={inlineStyles.timeTitle}
                         />
-                    </Card>
-                    <Card className="column">
-                        <RaisedButton
-                            tooltip="Play"
-                            onClick={this.play}
-                            disabled={this.state.playStart != 0}
-                            icon={<PlayIcon/>}
-                            className="buttonStyle column"
-                            primary={true}
+                        <PlayIcon
+                            style={inlineStyles.iconStyle}
+                            color={grey300}
                         />
-                        <RaisedButton
-                            tooltip="Stop"
-                            onClick={this.stop}
-                            disabled={this.state.playStart == 0 || this.state.stopped}
-                            icon={<StopIcon/>}
-                            className="buttonStyle column"
-                            primary={true}
+                        <StopIcon
+                            style={inlineStyles.iconStyle}
+                            color={grey300}
                         />
                     </Card>
                 </div>
