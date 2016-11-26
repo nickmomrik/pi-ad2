@@ -1,7 +1,7 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
+import ExitIcon from 'material-ui/svg-icons/action/exit-to-app';
 import {grey100, grey400} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
@@ -43,32 +43,32 @@ export default class Timer extends React.Component {
             rpms      : 0,
         };
 
-        this.timerPlayStop = this.timerPlayStop.bind(this);
+        this.timerClick = this.timerClick.bind(this);
         this.toggleDistanceType = this.toggleDistanceType.bind(this);
         this.toggleEffortType = this.toggleEffortType.bind(this);
     }
 
-    timerPlayStop() {
-        if (!this.state.stopped) {
-            if (this.state.playStart) {
-                this.setState({stopped: true});
+    timerClick() {
+        if (this.state.stopped) {
+            socket.emit('exit');
+        } else if (this.state.playStart) {
+            this.setState({stopped: true});
 
-                // Catch up on the last second before stopping.
-                setTimeout(() => clearInterval(this.interval), 1000);
-            } else {
-                socket.emit('start');
+            // Catch up on the last second before stopping.
+            setTimeout(() => clearInterval(this.interval), 1000);
+        } else {
+            socket.emit('start');
 
-                this.setState({playStart: Date.now()});
+            this.setState({playStart: Date.now()});
 
-                // Update the timer every second
-                this.interval = setInterval(() => this.everySecond(), 1000);
+            // Update the timer every second
+            this.interval = setInterval(() => this.everySecond(), 1000);
 
-                socket.on('spins', function (spins) {
-                    this.setState({
-                        spins: spins
-                    })
-                }.bind(this));
-            }
+            socket.on('spins', function (spins) {
+                this.setState({
+                    spins: spins
+                })
+            }.bind(this));
         }
     }
 
@@ -176,9 +176,27 @@ export default class Timer extends React.Component {
     }
 
     render() {
+        let actionButton;
+        if (this.state.stopped) {
+            actionButton = (<ExitIcon
+                style={inlineStyles.iconStyle}
+                color={grey400}
+            />);
+        } else if (this.state.playStart) {
+            actionButton = (<StopIcon
+                style={inlineStyles.iconStyle}
+                color={grey400}
+            />);
+        } else {
+            actionButton = (<PlayIcon
+                style={inlineStyles.iconStyle}
+                color={grey400}
+            />);
+        }
+
         return (
             <div className="container">
-                <div className="row" onClick={this.timerPlayStop}>
+                <div className="row" onClick={this.timerClick}>
                     <Card className="column" containerStyle={inlineStyles.time} style={inlineStyles.background}>
                         <CardTitle
                             title={this.time()}
@@ -186,16 +204,7 @@ export default class Timer extends React.Component {
                             titleStyle={inlineStyles.title}
                             style={inlineStyles.timeTitle}
                         />
-                        {this.state.playStart ?
-                            <StopIcon
-                                style={inlineStyles.iconStyle}
-                                color={this.state.stopped ? grey100 : grey400}
-                            /> :
-                            <PlayIcon
-                                style={inlineStyles.iconStyle}
-                                color={grey400}
-                            />
-                        }
+                        {actionButton}
                     </Card>
                 </div>
                 <div className="row" onClick={this.toggleEffortType}>
