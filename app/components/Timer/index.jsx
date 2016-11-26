@@ -1,5 +1,7 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+import PlayIcon from 'babel!svg-react!genericons-neue/svg-min/play.svg?name=PlayIcon';
+import StopIcon from 'babel!svg-react!genericons-neue/svg-min/stop.svg?name=StopIcon';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
@@ -159,8 +161,12 @@ export default class Timer extends React.Component {
             <Card>
                 <Card>
                     <CardTitle title={this.time()} />
-                    <RaisedButton onClick={this.play} disabled={this.state.playStart != 0} label="Play" />
-                    <RaisedButton onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped} label="Stop" />
+                    <IconButton tooltip="Play" onClick={this.play} disabled={this.state.playStart != 0} >
+                        <PlayIcon/>
+                    </IconButton>
+                    <IconButton tooltip="Stop" onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped}>
+                        <StopIcon/>
+                    </IconButton>
                 </Card>
                 <TimerInfo
                     info={this.calories()}
