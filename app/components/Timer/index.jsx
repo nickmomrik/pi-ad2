@@ -10,15 +10,15 @@ const socket = io();
 import styles from "./style.scss";
 const inlineStyles = {
     title: {
-        fontSize: 42
+        fontSize: 42,
     },
     time: {
         padding : 0,
-        width   : '100%'
+        width   : '100%',
     },
     timeTitle: {
-        padding : 0
-    }
+        padding : 0,
+    },
 };
 
 export default class Timer extends React.Component {
@@ -33,7 +33,7 @@ export default class Timer extends React.Component {
             miles     : 0.000,
             metric    : true,
             effortType: 'rpm',
-            rpms      : 0
+            rpms      : 0,
         };
 
         this.play = this.play.bind(this);

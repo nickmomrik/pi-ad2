@@ -5,15 +5,16 @@ import classNames from 'classnames';
 import styles from "./style.scss";
 const inlineStyles = {
     title: {
-        fontSize: 42
+        fontSize: 42,
+        paddingBottom: 10,
     },
     container: {
         padding : 0,
-        width   : '100%'
+        width   : '100%',
     },
     infoTitle: {
-        padding : 0
-    }
+        padding : 0,
+    },
 };
 
 export default class TimerInfo extends React.Component {
