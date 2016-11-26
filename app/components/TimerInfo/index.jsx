@@ -24,7 +24,6 @@ export default class TimerInfo extends React.Component {
     }
 
     render() {
-        console.log(_.merge(this.props.style,inlineStyles.infoTitle));
         return (
             <Card className={classNames(this.props.className)} containerStyle={inlineStyles.container} style={this.props.style}>
                 <CardTitle
