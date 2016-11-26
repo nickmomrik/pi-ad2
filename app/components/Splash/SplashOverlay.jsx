@@ -9,10 +9,10 @@ export default class SplashOverlay extends React.Component {
         return (
             <div>
                 <CardTitle
-                    title={pkg.name}
-                    subtitle={pkg.version}
-                    titleColor="#FFFFFF"
-                    subtitleColor="#CCCCCC" />
+                    title="Pi AD2"
+                    subtitle={'v' + pkg.version}
+                    titleColor="#DDDDDD"
+                    subtitleColor="#AAAAAA" />
                 <CardActions>
                     <Link to="/app"><RaisedButton label="Workout Now!" /></Link>
                 </CardActions>

@@ -5,10 +5,10 @@ import StopIcon from 'babel!svg-react!genericons-neue/svg-min/stop.svg?name=Stop
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
+import styles from './style.scss';
 
 const socket = io();
 
-import 'style.scss';
 
 export default class Timer extends React.Component {
     constructor(props) {
@@ -161,11 +161,11 @@ export default class Timer extends React.Component {
             <Card>
                 <Card>
                     <CardTitle title={this.time()} />
-                    <IconButton tooltip="Play" onClick={this.play} disabled={this.state.playStart != 0} >
-                        <PlayIcon/>
+                    <IconButton tooltip="Play" onClick={this.play} disabled={this.state.playStart != 0}>
+                        <PlayIcon className="mediumIcon" />
                     </IconButton>
                     <IconButton tooltip="Stop" onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped}>
-                        <StopIcon/>
+                        <StopIcon className="mediumIcon" />
                     </IconButton>
                 </Card>
                 <TimerInfo

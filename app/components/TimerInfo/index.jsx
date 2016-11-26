@@ -1,8 +1,6 @@
 import React from 'react';
 import {Card, CardTitle} from 'material-ui/Card';
 
-import 'style.scss';
-
 export default class TimerInfo extends React.Component {
     constructor(props) {
         super(props);

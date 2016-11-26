@@ -1,5 +1,5 @@
 {
-  "name": "Pi AD2",
+  "name": "pi-ad2",
   "version": "1.2.0-beta",
   "description": "A replacement monitor for the Schwinn Airdyne AD2, built for a Raspberry Pi.",
   "main": "server.js",
