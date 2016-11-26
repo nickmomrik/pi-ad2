@@ -6,10 +6,13 @@ const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
-
 const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
+const os = require('os');
+const isLinux = ('Linux' == os.type());
+const debug = require('debug')('pi-ad2');
+var chromium = null;
 
 if (isDeveloping) {
   const compiler = webpack(config);
@@ -33,6 +36,16 @@ if (isDeveloping) {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
   });
+
+    if (isLinux) {
+        middleware.waitUntilValid(function () {
+            if (!chromium) {
+                debug('Starting chromium on Linux');
+                const proc = require('child_process');
+                chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:' + port]);
+            }
+        });
+    }
 } else {
   app.use(express.static(__dirname + '/dist'));
   app.get('*', function response(req, res) {
@@ -48,9 +61,6 @@ const http = app.listen(port, function onStart(err) {
 });
 
 const io = require('socket.io')(http);
-const os = require('os');
-const proc = require('child_process');
-const debug = require('debug')('pi-ad2');
 const clapDetector = require('clap-detector');
 const _ = require('lodash');
 
@@ -76,7 +86,7 @@ io.on('connection', function(socket) {
   }).on('exit', function() {
     debug('exit');
 
-    if ('Linux' == os.type()) {
+    if (isLinux && chromium) {
       debug('Kill chromium on Linux');
       chromium.kill('SIGINT');
     }
@@ -84,8 +94,3 @@ io.on('connection', function(socket) {
     process.exit();
   });
 });
-
-if ('Linux' == os.type()) {
-  debug('Starting chromium on Linux');
-  var chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:' + port]);
-}
