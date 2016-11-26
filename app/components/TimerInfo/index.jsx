@@ -8,7 +8,7 @@ export default class TimerInfo extends React.Component {
 
     render() {
         return (
-            <Card>
+            <Card className={this.props.className}>
                 <CardTitle
                     title={this.props.info.toString()}
                     subtitle={this.props.label}

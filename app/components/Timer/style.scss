@@ -1,7 +1,5 @@
 .buttonStyle {
   margin: 12px;
-  minWidth: 60px;
-  height: 48px;
   width: 48px;
 }
 
@@ -9,15 +7,17 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: 300px;
 }
 
 .row {
   display: flex;
   flex-direction: column;
   flex: 1 0 0;
-  padding: 10px
+  padding: 10px;
 }
 
 .row .column {
   flex: 1 0 0;
+  text-align: center;
 }
