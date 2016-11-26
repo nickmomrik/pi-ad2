@@ -8,14 +8,12 @@ export default class TimerInfo extends React.Component {
 
     render() {
         return (
-            <div onClick={this.props.onClick}>
-                <Card>
-                    <CardTitle
-                        title={this.props.info.toString()}
-                        subtitle={this.props.label}
-                    />
-                </Card>
-            </div>
+            <Card>
+                <CardTitle
+                    title={this.props.info.toString()}
+                    subtitle={this.props.label}
+                />
+            </Card>
         );
     }
 }

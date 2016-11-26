@@ -5,13 +5,8 @@ import StopIcon from 'material-ui/svg-icons/av/stop';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
+import styles from "./style.scss";
 const socket = io();
-const style = {
-    margin: 12,
-    minWidth: 60,
-    height: 48,
-    width: 48,
-};
 
 export default class Timer extends React.Component {
     constructor(props) {
@@ -161,44 +156,54 @@ export default class Timer extends React.Component {
 
     render() {
         return (
-            <Card>
-                <Card>
-                    <CardTitle title={this.time()} />
-                    <RaisedButton
-                        tooltip="Play"
-                        onClick={this.play}
-                        disabled={this.state.playStart != 0}
-                        icon={<PlayIcon/>}
-                        style={style}
+            <div className="container">
+                <div className="row">
+                    <Card className="column">
+                        <CardTitle title={this.time()} />
+                    </Card>
+                    <Card className="column">
+                        <RaisedButton
+                            tooltip="Play"
+                            onClick={this.play}
+                            disabled={this.state.playStart != 0}
+                            icon={<PlayIcon/>}
+                            className="buttonStyle column"
+                        />
+                        <RaisedButton
+                            tooltip="Stop"
+                            onClick={this.stop}
+                            disabled={this.state.playStart == 0 || this.state.stopped}
+                            icon={<StopIcon/>}
+                            className="buttonStyle column"
+                        />
+                    </Card>
+                </div>
+                <div className="row" onClick={this.toggleEffortType}>
+                    <TimerInfo
+                        info={this.calories()}
+                        label="Calories"
+                        className="column"
                     />
-                    <RaisedButton
-                        tooltip="Stop"
-                        onClick={this.stop}
-                        disabled={this.state.playStart == 0 || this.state.stopped}
-                        icon={<StopIcon/>}
-                        style={style}
+                    <TimerInfo
+                        info={this.effort()}
+                        label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
+                        className="column"
                     />
-                </Card>
-                <TimerInfo
-                    info={this.calories()}
-                    label="Calories"
-                />
-                <TimerInfo
-                    info={this.distance()}
-                    label={this.state.metric ? 'km' : 'Miles'}
-                    onClick={this.toggleDistanceType}
-                />
-                <TimerInfo
-                    info={this.speed()}
-                    label={this.state.metric ? 'km/h' : 'MPH'}
-                    onClick={this.toggleDistanceType}
-                />
-                <TimerInfo
-                    info={this.effort()}
-                    label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
-                    onClick={this.toggleEffortType}
-                />
-            </Card>
+                </div>
+                <div className="row" onClick={this.toggleDistanceType}
+                >
+                    <TimerInfo
+                        info={this.speed()}
+                        label={this.state.metric ? 'km/h' : 'MPH'}
+                        className="column"
+                    />
+                    <TimerInfo
+                        info={this.distance()}
+                        label={this.state.metric ? 'km' : 'Miles'}
+                        className="column"
+                    />
+                </div>
+            </div>
         );
     }
 }

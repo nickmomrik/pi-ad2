@@ -1,0 +1,23 @@
+.buttonStyle {
+  margin: 12px;
+  minWidth: 60px;
+  height: 48px;
+  width: 48px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  padding: 10px
+}
+
+.row .column {
+  flex: 1 0 0;
+}
