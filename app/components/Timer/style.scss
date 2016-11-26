@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 300px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1 1 0;
+  padding: 0px;
+}
+
+.row .column {
+  display: flex;
+  align-items: center;
+  align-content: stretch;
+  flex: 1 1 0;
+  text-align: center;
+  background: #F5F5F5;
+}
+
+.time {
+  width: 100%;
+  padding: 0px;
+}
