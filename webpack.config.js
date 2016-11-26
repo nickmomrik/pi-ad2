@@ -46,9 +46,6 @@ module.exports = {
         }, {
             test: /\.scss$/,
             loaders: ['style', 'css', 'sass']
-        }, {
-            test: /\.svg$/,
-            loader: 'babel?presets[]=es2015,presets[]=react!svg-react'
         }
     ]
   },

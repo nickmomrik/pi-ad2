@@ -1,14 +1,12 @@
 import React from 'react';
-import IconButton from 'material-ui/IconButton';
-import PlayIcon from 'babel!svg-react!genericons-neue/svg-min/play.svg?name=PlayIcon';
-import StopIcon from 'babel!svg-react!genericons-neue/svg-min/stop.svg?name=StopIcon';
+import RaisedButton from 'material-ui/RaisedButton';
+import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
+import StopIcon from 'material-ui/svg-icons/av/stop';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
-import styles from './style.scss';
 
 const socket = io();
-
 
 export default class Timer extends React.Component {
     constructor(props) {
@@ -161,12 +159,18 @@ export default class Timer extends React.Component {
             <Card>
                 <Card>
                     <CardTitle title={this.time()} />
-                    <IconButton tooltip="Play" onClick={this.play} disabled={this.state.playStart != 0}>
-                        <PlayIcon className="mediumIcon" />
-                    </IconButton>
-                    <IconButton tooltip="Stop" onClick={this.stop} disabled={this.state.playStart == 0 || this.state.stopped}>
-                        <StopIcon className="mediumIcon" />
-                    </IconButton>
+                    <RaisedButton
+                        tooltip="Play"
+                        onClick={this.play}
+                        disabled={this.state.playStart != 0}
+                        icon={<PlayIcon/>}
+                    />
+                    <RaisedButton
+                        tooltip="Stop"
+                        onClick={this.stop}
+                        disabled={this.state.playStart == 0 || this.state.stopped}
+                        icon={<StopIcon/>}
+                    />
                 </Card>
                 <TimerInfo
                     info={this.calories()}
