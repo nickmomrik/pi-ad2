@@ -13,11 +13,20 @@
 .row {
   display: flex;
   flex-direction: column;
-  flex: 1 0 0;
-  padding: 10px;
+  align-items: stretch;
+  flex: 1 1 0;
+  padding: 4px;
 }
 
 .row .column {
-  flex: 1 0 0;
+  display: flex;
+  align-items: center;
+  align-content: stretch;
+  flex: 1 1 0;
   text-align: center;
+}
+
+.time {
+  width: 100%;
+  padding: 0px;
 }

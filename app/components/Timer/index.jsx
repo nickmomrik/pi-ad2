@@ -5,8 +5,21 @@ import StopIcon from 'material-ui/svg-icons/av/stop';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import _ from 'lodash';
-import styles from "./style.scss";
 const socket = io();
+
+import styles from "./style.scss";
+const inlineStyles = {
+    title: {
+        fontSize: 42
+    },
+    time: {
+        padding : 0,
+        width   : '100%'
+    },
+    timeTitle: {
+        padding : 0
+    }
+};
 
 export default class Timer extends React.Component {
     constructor(props) {
@@ -158,8 +171,13 @@ export default class Timer extends React.Component {
         return (
             <div className="container">
                 <div className="row">
-                    <Card className="column">
-                        <CardTitle title={this.time()} />
+                    <Card className="column" containerStyle={inlineStyles.time}>
+                        <CardTitle
+                            title={this.time()}
+                            className="time"
+                            titleStyle={inlineStyles.title}
+                            style={inlineStyles.timeTitle}
+                        />
                     </Card>
                     <Card className="column">
                         <RaisedButton
@@ -168,6 +186,7 @@ export default class Timer extends React.Component {
                             disabled={this.state.playStart != 0}
                             icon={<PlayIcon/>}
                             className="buttonStyle column"
+                            primary={true}
                         />
                         <RaisedButton
                             tooltip="Stop"
@@ -175,6 +194,7 @@ export default class Timer extends React.Component {
                             disabled={this.state.playStart == 0 || this.state.stopped}
                             icon={<StopIcon/>}
                             className="buttonStyle column"
+                            primary={true}
                         />
                     </Card>
                 </div>
