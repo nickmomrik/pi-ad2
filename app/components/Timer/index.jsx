@@ -25,8 +25,8 @@ export default class Timer extends React.Component {
 
         this.play = this.play.bind(this);
         this.stop = this.stop.bind(this);
-        this.changeDistanceType = this.changeDistanceType.bind(this);
-        this.changeEffortType = this.changeEffortType.bind(this);
+        this.toggleDistanceType = this.toggleDistanceType.bind(this);
+        this.toggleEffortType = this.toggleEffortType.bind(this);
     }
 
     play() {
@@ -50,7 +50,6 @@ export default class Timer extends React.Component {
     }
 
     everySecond() {
-        console.log
         let newState = {
             seconds: this.state.seconds + 1
         };
@@ -81,15 +80,13 @@ export default class Timer extends React.Component {
         this.setState(newState);
     }
 
-    changeDistanceType() {
-        console.log(this.state);
+    toggleDistanceType() {
         this.setState(prevState => ({
             metric: !prevState.metric
         }));
     }
 
-    changeEffortType() {
-        console.log(this.state);
+    toggleEffortType() {
         this.setState(prevState => ({
             effortType: ('rpm' == prevState.effortType) ? 'watts' : 'rpm'
         }));
@@ -114,10 +111,6 @@ export default class Timer extends React.Component {
         return _.round(distance, 3).toFixed(3)
     }
 
-    distanceLabel() {
-        return (this.state.metric) ? 'km' : 'Miles';
-    }
-
     milesSpeed() {
         return _.round((this.state.rpms / ( 10 / 3 )), 2)
     }
@@ -131,16 +124,13 @@ export default class Timer extends React.Component {
         return _.round(speed, 1).toFixed(1);
     }
 
-    speedLabel() {
-        return (this.state.metric) ? 'km/h' : 'MPH';
-    }
-
     effort() {
-        return ('rpm' == this.state.effortType) ? this.state.rpms : Math.floor(0.172 * (Math.pow(this.state.rpms, 2)) - (12.16 * this.state.rpms) + 271.3);
-    }
+        let effort = this.state.rpms;
+        if ('rpm' != this.state.effortType && this.state.rpms > 0) {
+            effort = Math.floor(0.172 * (Math.pow(this.state.rpms, 2)) - (12.16 * this.state.rpms) + 271.3);
+        }
 
-    effortLabel() {
-        return ('rpm' == this.state.effortType) ? 'RPM' : 'Watts';
+        return effort;
     }
 
     convert_miles_to_km(miles, precision) {
@@ -161,18 +151,18 @@ export default class Timer extends React.Component {
                 />
                 <TimerInfo
                     info={this.distance()}
-                    label={this.distanceLabel()}
-                    onClick={this.changeDistanceType}
+                    label={this.state.metric ? 'km' : 'Miles'}
+                    onClick={this.toggleDistanceType}
                 />
                 <TimerInfo
                     info={this.speed()}
-                    label={this.speedLabel()}
-                    onClick={this.changeDistanceType}
+                    label={this.state.metric ? 'km/h' : 'MPH'}
+                    onClick={this.toggleDistanceType}
                 />
                 <TimerInfo
                     info={this.effort()}
-                    label={this.effortLabel()}
-                    onClick={this.changeEffortType}
+                    label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
+                    onClick={this.toggleEffortType}
                 />
             </Card>
         );
