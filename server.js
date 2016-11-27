@@ -106,32 +106,30 @@ const clapDetector = require('clap-detector');
 io.on('connection', function(socket) {
   debug('connection');
 
-  socket.on('start', function() {
-    debug('start');
+    clapDetector.start({
+        DETECTION_PERCENTAGE_START: '5%',
+        DETECTION_PERCENTAGE_END: '5%',
+        CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
+        CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
+        CLAP_MAX_DURATION: 100
+    });
 
-      clapDetector.start({
-          DETECTION_PERCENTAGE_START: '5%',
-          DETECTION_PERCENTAGE_END: '5%',
-          CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
-          CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
-          CLAP_MAX_DURATION: 100
-      });
+    clapDetector.onClap(function(history) {
+        debug('detected');
 
-      clapDetector.onClap(function(history) {
-          debug('detected');
+        io.emit('spins', _.map(history, 'time'));
+    });
 
-          io.emit('spins', _.map(history, 'time'));
-      });
-  }).on('exit', function() {
-    debug('exit');
+    socket.on('exit', function() {
+        debug('exit');
 
-    if (isLinux && chromium) {
-      debug('Kill chromium on Linux');
-      chromium.kill('SIGINT');
-    }
+        if (isLinux && chromium) {
+          debug('Kill chromium on Linux');
+          chromium.kill('SIGINT');
+        }
 
-    io.close();
+        io.close();
 
-    process.exit();
-  });
+        process.exit();
+    });
 });

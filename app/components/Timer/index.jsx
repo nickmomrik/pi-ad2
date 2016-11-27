@@ -60,21 +60,23 @@ class Timer extends React.Component {
     }
 
     componentWillMount() {
+        socket.on('spins', this.updateSpins);
+
         Config.get('metric', function(value) { this.setState({metric: value})}.bind(this));
+    }
+
+    componentWillUnmount() {
+        socket.off('spins', this.updateSpins);
     }
 
     timerClick = () => {
         if (this.state.playStart) {
             this.setState({confirmOpen: true});
         } else {
-            socket.emit('start');
-
             this.setState({playStart: Date.now()});
 
             // Update the timer every second
             this.interval = setInterval(() => this.everySecond(), 1000);
-
-            socket.on('spins', this.updateSpins);
         }
     };
 
@@ -88,9 +90,6 @@ class Timer extends React.Component {
         this.handleCancel();
 
         if (!this.state.stopped) {
-            // Stop processing spins
-            socket.off('spins', this.updateSpins);
-
             this.setState({stopped: true});
 
             // Catch up on the last second before stopping.
