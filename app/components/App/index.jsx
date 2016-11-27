@@ -1,6 +1,7 @@
 import React from 'react';
 import Timer from 'components/Timer';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Config from 'utils/Config.js';
@@ -19,18 +20,17 @@ export default class App extends React.Component {
   }
 
   render() {
-      if ('light' == this.state.theme) {
-          return (
-              <MuiThemeProvider>
-                  <Timer />
-              </MuiThemeProvider>
-          );
+      let muiTheme;
+      if ('dark' == this.state.theme) {
+          muiTheme = getMuiTheme(darkBaseTheme);
       } else {
-          return (
-              <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-                  <Timer />
-              </MuiThemeProvider>
-          );
+          muiTheme = getMuiTheme(lightBaseTheme);
       }
+
+      return (
+          <MuiThemeProvider muiTheme={muiTheme}>
+              <Timer />
+          </MuiThemeProvider>
+      );
   }
 }
