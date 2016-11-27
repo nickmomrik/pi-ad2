@@ -20,6 +20,7 @@ const app = express();
 const os = require('os');
 const isLinux = ('Linux' == os.type());
 const debug = require('debug')('pi-ad2');
+var multer  = require('multer')();
 var chromium = null;
 
 if (isDeveloping) {
@@ -42,10 +43,28 @@ if (isDeveloping) {
   app.use(webpackHotMiddleware(compiler));
 
   // Declare API routes before '*'
-  app.get('/api/get/config/:option', function(req, res) {
-    var value = (req.params.option in CONFIG) ? CONFIG[req.params.option] : null;
-    res.send(value);
+  app.get('/api/config/:option', function(req, res) {
+      var value = (req.params.option in CONFIG) ? CONFIG[req.params.option] : null;
+      res.send(value);
   });
+    app.post('/api/config/:option', multer.array(), function (req, res, next) {
+        if (!req.body) {
+            return res.sendStatus(400)
+        } else {
+            for (key in req.body) {
+                if (key in CONFIG) {
+                    CONFIG[key] = req.body[key];
+                    fs.writeFile(customConfig, JSON.stringify(CONFIG, null, '\t'), function(err) {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+                }
+            }
+
+            res.sendStatus(200);
+        }
+    });
 
   app.get('/', function response(req, res) {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));

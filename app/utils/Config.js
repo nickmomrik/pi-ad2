@@ -1,7 +1,7 @@
 var Config = (function() {
     return {
         get: function (option, callback) {
-            fetch('/api/get/config/' + option).then(function(response) {
+            fetch('/api/config/' + option).then(function(response) {
                 return response.text().then(function(value) {
                     if (value === 'true') {
                         value = true;
@@ -13,6 +13,15 @@ var Config = (function() {
                         callback(value);
                     }
                 });
+            });
+        },
+        put: function(option, value) {
+            var form = new FormData();
+            form.append(option, value);
+            // Should probably test the result here
+            fetch('/api/config/' + option, {
+                method: "POST",
+                body: form
             });
         }
     };
