@@ -1,5 +1,13 @@
 /* eslint no-console: 0 */
 
+const fs = require('fs')
+const _ = require('lodash');
+var CONFIG = require('./config/default.json');
+var customConfig = './config/custom.json';
+if (fs.existsSync(customConfig)) {
+    _.assign(CONFIG, require(customConfig));
+}
+
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
@@ -32,6 +40,13 @@ if (isDeveloping) {
   app.use(express.static(path.join(__dirname, 'app', 'public')));
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
+
+  // Declare API routes before '*'
+  app.get('/api/get/config/:option', function(req, res) {
+    var value = (req.params.option in CONFIG) ? CONFIG[req.params.option] : null;
+    res.send(value);
+  });
+
   app.get('/', function response(req, res) {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
@@ -48,6 +63,12 @@ if (isDeveloping) {
     }
 } else {
   app.use(express.static(__dirname + '/dist'));
+
+  // Declare API routes before '*'
+  app.get('/api/config', function(req, res) {
+    res.json(CONFIG);
+  });
+
   app.get('*', function response(req, res) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
   });
@@ -62,7 +83,6 @@ const http = app.listen(port, function onStart(err) {
 
 const io = require('socket.io')(http);
 const clapDetector = require('clap-detector');
-const _ = require('lodash');
 
 io.on('connection', function(socket) {
   debug('connection');
@@ -73,8 +93,8 @@ io.on('connection', function(socket) {
       clapDetector.start({
           DETECTION_PERCENTAGE_START: '5%',
           DETECTION_PERCENTAGE_END: '5%',
-          CLAP_AMPLITUDE_THRESHOLD: 0.1,
-          CLAP_ENERGY_THRESHOLD: 0.8,
+          CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
+          CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
           CLAP_MAX_DURATION: 100
       });
 

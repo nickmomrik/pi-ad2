@@ -41,7 +41,7 @@ export default class Timer extends React.Component {
             seconds: 0,
             calories: 0,
             miles: 0.000,
-            metric: true,
+            metric: this.props.metric || true,
             effortType: 'rpm',
             rpms: 0,
         };
