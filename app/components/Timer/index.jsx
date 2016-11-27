@@ -5,12 +5,12 @@ import StopIcon from 'material-ui/svg-icons/av/stop';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import {grey400, grey800} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
-import TimerInfo from 'components/TimerInfo';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import _ from 'lodash';
 import Config from 'utils/Config.js';
 import ThemeProvider from 'react-theme-provider';
+import classNames from 'classnames';
+import _ from 'lodash';
 
 const socket = io();
 
@@ -29,9 +29,20 @@ const inlineStyles = {
     margins: {
         margin: 12,
     },
+    infoTitle: {
+        fontSize: 42,
+        paddingBottom: 10,
+    },
+    container: {
+        padding : 0,
+        width   : '100%',
+    },
+    infoCardTitle: {
+        padding : 0,
+    },
 };
 
-export default class Timer extends React.Component {
+class Timer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -288,3 +299,29 @@ export default class Timer extends React.Component {
         );
     }
 }
+
+class TimerInfo extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <Card className={classNames(this.props.className)} containerStyle={inlineStyles.container} style={this.props.style}>
+                <CardTitle
+                    title={this.props.info.toString()}
+                    subtitle={this.props.label}
+                    titleStyle={inlineStyles.infoTitle}
+                    subtitleStyle={inlineStyles.subtitle}
+                    className="timerInfo"
+                    style={inlineStyles.infoCardTitle}
+                />
+            </Card>
+        );
+    }
+}
+
+module.exports = {
+    Timer,
+    TimerInfo,
+};

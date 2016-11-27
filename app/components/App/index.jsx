@@ -3,7 +3,7 @@ import {Router, Route, hashHistory, IndexRoute} from 'react-router';
 import Container from 'components/Container';
 import Splash from 'components/Splash';
 import MainMenu from 'components/MainMenu';
-import Timer from 'components/Timer';
+import {Timer} from 'components/Timer';
 import Settings from 'components/Settings';
 import Exit from 'components/Exit';
 
