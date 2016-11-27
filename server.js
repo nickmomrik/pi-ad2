@@ -130,6 +130,8 @@ io.on('connection', function(socket) {
       chromium.kill('SIGINT');
     }
 
+    io.close();
+
     process.exit();
   });
 });

@@ -63,18 +63,23 @@ export default class Timer extends React.Component {
             // Update the timer every second
             this.interval = setInterval(() => this.everySecond(), 1000);
 
-            socket.on('spins', function (spins) {
-                this.setState({
-                    spins: spins
-                })
-            }.bind(this));
+            socket.on('spins', this.updateSpins);
         }
+    };
+
+    updateSpins = (spins) => {
+        this.setState({
+            spins: spins
+        })
     };
 
     handleConfirm = () => {
         this.handleCancel();
 
         if (!this.state.stopped) {
+            // Stop processing spins
+            socket.off('spins', this.updateSpins);
+
             this.setState({stopped: true});
 
             // Catch up on the last second before stopping.

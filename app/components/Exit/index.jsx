@@ -8,6 +8,8 @@ const socket = io();
 export default class Exit extends React.Component {
     componentDidMount() {
         socket.emit('exit');
+
+        socket.close();
     }
 
     render() {
