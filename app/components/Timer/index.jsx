@@ -67,7 +67,6 @@ export default class Timer extends React.Component {
     };
 
     handleConfirm = () => {
-        console.log('confirm');
         this.handleCancel();
 
         if (this.state.stopped) {
@@ -81,7 +80,6 @@ export default class Timer extends React.Component {
     };
 
     handleCancel = () => {
-        console.log('cancel');
         this.setState({confirmOpen: false});
     };
 
