@@ -67,6 +67,7 @@ class Timer extends React.Component {
 
     componentWillUnmount() {
         socket.off('spins', this.updateSpins);
+        socket.disconnect();
     }
 
     timerClick = () => {

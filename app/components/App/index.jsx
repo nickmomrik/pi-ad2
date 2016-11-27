@@ -8,7 +8,7 @@ import Settings from 'components/Settings';
 import Exit from 'components/Exit';
 
 export default class App extends React.Component {
-  render() {
+    render() {
       return (
           <Router history={hashHistory}>
               <Route path='/' component={Container}>
@@ -20,5 +20,5 @@ export default class App extends React.Component {
               </Route>
           </Router>
       );
-  }
+    }
 }
