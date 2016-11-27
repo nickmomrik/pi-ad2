@@ -1,36 +1,24 @@
 import React from 'react';
+import {Router, Route, hashHistory, IndexRoute} from 'react-router';
+import Container from 'components/Container';
+import Splash from 'components/Splash';
+import MainMenu from 'components/MainMenu';
 import Timer from 'components/Timer';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Config from 'utils/Config.js';
+import Settings from 'components/Settings';
+import Exit from 'components/Exit';
 
 export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-        theme: 'light',
-    };
-  }
-
-  componentWillMount() {
-      Config.get('theme', function(value) { this.setState({theme: value})}.bind(this));
-  }
-
   render() {
-      let muiTheme;
-      if ('dark' == this.state.theme) {
-          muiTheme = getMuiTheme(darkBaseTheme);
-      } else {
-          muiTheme = getMuiTheme(lightBaseTheme);
-      }
-
       return (
-          <MuiThemeProvider muiTheme={muiTheme}>
-              <Timer />
-          </MuiThemeProvider>
+          <Router history={hashHistory}>
+              <Route path='/' component={Container}>
+                  <IndexRoute component={Splash} />
+                  <Route path='/app' component={MainMenu} />
+                  <Route path='/timer' component={Timer} />
+                  <Route path="/settings" component={Settings} />
+                  <Route path="/exit" component={Exit} />
+              </Route>
+          </Router>
       );
   }
 }

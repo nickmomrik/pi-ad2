@@ -1,21 +1,21 @@
 import React from 'react';
+import {Link} from 'react-router';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
-import ExitIcon from 'material-ui/svg-icons/action/exit-to-app';
-import {grey100, grey400} from 'material-ui/styles/colors';
+import ListIcon from 'material-ui/svg-icons/action/list';
+import {grey400, grey800} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import TimerInfo from 'components/TimerInfo';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import _ from 'lodash';
 import Config from 'utils/Config.js';
+import ThemeProvider from 'react-theme-provider';
+
 const socket = io();
 
 import styles from "./style.scss";
 const inlineStyles = {
-    background: {
-        background: grey100,
-    },
     title: {
         fontSize: 42,
     },
@@ -53,7 +53,7 @@ export default class Timer extends React.Component {
     }
 
     timerClick = () => {
-        if (this.state.stopped || this.state.playStart) {
+        if (this.state.playStart) {
             this.setState({confirmOpen: true});
         } else {
             socket.emit('start');
@@ -74,9 +74,7 @@ export default class Timer extends React.Component {
     handleConfirm = () => {
         this.handleCancel();
 
-        if (this.state.stopped) {
-            socket.emit('exit');
-        } else {
+        if (!this.state.stopped) {
             this.setState({stopped: true});
 
             // Catch up on the last second before stopping.
@@ -193,20 +191,22 @@ export default class Timer extends React.Component {
 
     render() {
         let actionButton;
+        // get active theme here
+        let color = (true) ? grey400 : grey800;
         if (this.state.stopped) {
-            actionButton = (<ExitIcon
+            actionButton = (<ListIcon
                 style={inlineStyles.margins}
-                color={grey400}
+                color={color}
             />);
         } else if (this.state.playStart) {
             actionButton = (<StopIcon
                 style={inlineStyles.margins}
-                color={grey400}
+                color={color}
             />);
         } else {
             actionButton = (<PlayIcon
                 style={inlineStyles.margins}
-                color={grey400}
+                color={color}
             />);
         }
 
@@ -225,57 +225,61 @@ export default class Timer extends React.Component {
             />,
         ];
 
+        let TimerDiv =
+            <Card className="column" containerStyle={inlineStyles.time}>
+                <CardTitle
+                    title={this.time()}
+                    className="time"
+                    titleStyle={inlineStyles.title}
+                    style={inlineStyles.timeTitle}
+                />
+                {actionButton}
+            </Card>;
+        if (this.state.stopped) {
+            TimerDiv = <Link to="/app" className="row">{TimerDiv}</Link>;
+        } else {
+            TimerDiv = <div className="row" onClick={this.timerClick}>{TimerDiv}</div>;
+        }
+
         return (
-            <div className="container">
-                <div className="row" onClick={this.timerClick}>
-                    <Card className="column" containerStyle={inlineStyles.time} style={inlineStyles.background}>
-                        <CardTitle
-                            title={this.time()}
-                            className="time"
-                            titleStyle={inlineStyles.title}
-                            style={inlineStyles.timeTitle}
+            <ThemeProvider>
+                <div className="container">
+                    {TimerDiv}
+                    <div className="row" onClick={this.toggleEffortType}>
+                        <TimerInfo
+                            info={this.calories()}
+                            label="Calories"
+                            className="column"
                         />
-                        {actionButton}
-                    </Card>
+                        <TimerInfo
+                            info={this.effort()}
+                            label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
+                            className="column"
+                        />
+                    </div>
+                    <div className="row" onClick={this.toggleDistanceType}>
+                        <TimerInfo
+                            info={this.speed()}
+                            label={this.state.metric ? 'km/h' : 'MPH'}
+                            className="column"
+                        />
+                        <TimerInfo
+                            info={this.distance()}
+                            label={this.state.metric ? 'km' : 'Miles'}
+                            className="column"
+                        />
+                    </div>
+                    <Dialog
+                        title="Please Confirm"
+                        actions={actions}
+                        modal={false}
+                        open={this.state.confirmOpen}
+                        onRequestClose={this.handleCancel}
+                    >
+                        Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
+                    </Dialog>
                 </div>
-                <div className="row" onClick={this.toggleEffortType}>
-                    <TimerInfo
-                        info={this.calories()}
-                        label="Calories"
-                        className="column"
-                        style={inlineStyles.background}
-                    />
-                    <TimerInfo
-                        info={this.effort()}
-                        label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
-                        className="column"
-                        style={inlineStyles.background}
-                    />
-                </div>
-                <div className="row" onClick={this.toggleDistanceType}>
-                    <TimerInfo
-                        info={this.speed()}
-                        label={this.state.metric ? 'km/h' : 'MPH'}
-                        className="column"
-                        style={inlineStyles.background}
-                    />
-                    <TimerInfo
-                        info={this.distance()}
-                        label={this.state.metric ? 'km' : 'Miles'}
-                        className="column"
-                        style={inlineStyles.background}
-                    />
-                </div>
-                <Dialog
-                    title="Please Confirm"
-                    actions={actions}
-                    modal={false}
-                    open={this.state.confirmOpen}
-                    onRequestClose={this.handleCancel}
-                >
-                    Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
-                </Dialog>
-            </div>
+            </ThemeProvider>
         );
     }
 }
