@@ -10,13 +10,11 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-        metric: true,
         theme: 'light',
     };
   }
 
   componentWillMount() {
-      Config.get('metric', function(value) { this.setState({metric: value})}.bind(this));
       Config.get('theme', function(value) { this.setState({theme: value})}.bind(this));
   }
 
@@ -24,13 +22,13 @@ export default class App extends React.Component {
       if ('light' == this.state.theme) {
           return (
               <MuiThemeProvider>
-                  <Timer metric={this.state.metric} />
+                  <Timer />
               </MuiThemeProvider>
           );
       } else {
           return (
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-                  <Timer metric={this.state.metric} />
+                  <Timer />
               </MuiThemeProvider>
           );
       }

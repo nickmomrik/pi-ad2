@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, hashHistory } from 'react-router';
+import {Router, Route, hashHistory} from 'react-router';
 import App from 'components/App';
 import Splash from 'components/Splash';
 import injectTapEventPlugin from 'react-tap-event-plugin';

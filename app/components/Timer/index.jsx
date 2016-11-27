@@ -8,6 +8,7 @@ import TimerInfo from 'components/TimerInfo';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import _ from 'lodash';
+import Config from 'utils/Config.js';
 const socket = io();
 
 import styles from "./style.scss";
@@ -41,10 +42,14 @@ export default class Timer extends React.Component {
             seconds: 0,
             calories: 0,
             miles: 0.000,
-            metric: this.props.metric || true,
+            metric: true,
             effortType: 'rpm',
             rpms: 0,
         };
+    }
+
+    componentWillMount() {
+        Config.get('metric', function(value) { this.setState({metric: value})}.bind(this));
     }
 
     timerClick = () => {
