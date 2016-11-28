@@ -76,6 +76,8 @@ if (isDeveloping) {
                         var newConfig = {};
                         newConfig[clapKey] = CONFIG[key];
                         clapDetector.updateConfig(newConfig);
+                    } else if ( 'theme' == key ) {
+                        io.emit('themeChange', CONFIG[key]);
                     }
                 }
             }
