@@ -5,6 +5,7 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import Slider from 'material-ui/Slider';
 import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import CircularProgress from 'material-ui/CircularProgress';
+import {grey100, grey900} from 'material-ui/styles/colors';
 import Config from 'utils/Config';
 
 const socket = io();
@@ -62,8 +63,8 @@ const inlineStyles = {
 
 
 export default class Settings extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
             spinProgress: 8,
@@ -73,6 +74,11 @@ export default class Settings extends React.Component {
             clapDetectorEnergy: 0.3,
         };
     }
+
+    static contextTypes = {
+        theme: React.PropTypes.string
+    };
+
 
     componentDidMount() {
         socket.on('spins', this.spin);
@@ -126,10 +132,12 @@ export default class Settings extends React.Component {
     };
 
     render() {
+        let color = ('light' == this.context.theme) ? grey900 : grey100;
+
         return (
                 <Card style={inlineStyles.card}>
                     <Link to="/app" onClick={this.spinsOff}>
-                        <ArrowBackIcon />
+                        <ArrowBackIcon color={color} />
                     </Link>
 
                     <CardTitle
