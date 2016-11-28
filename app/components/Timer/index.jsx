@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
 import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
-import {grey400, grey800} from 'material-ui/styles/colors';
+import {grey400, grey700} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
@@ -43,8 +43,9 @@ const inlineStyles = {
 };
 
 class Timer extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
+
         this.state = {
             playStart: 0,
             stopped: false,
@@ -59,16 +60,15 @@ class Timer extends React.Component {
         };
     }
 
+    static contextTypes = {
+        theme: React.PropTypes.string
+    };
+
     componentWillMount() {
         socket.on('spins', this.updateSpins);
 
         Config.get('metric', function(value) { this.setState({metric: value})}.bind(this));
     }
-
-    spinsOff = () => {
-        socket.off('spins', this.updateSpins);
-        socket.disconnect();
-    };
 
     componentWillUnmount() {
         this.spinsOff();
@@ -89,6 +89,11 @@ class Timer extends React.Component {
         this.setState({
             spins: spins
         })
+    };
+
+    spinsOff = () => {
+        socket.off('spins', this.updateSpins);
+        socket.disconnect();
     };
 
     handleConfirm = () => {
@@ -214,8 +219,7 @@ class Timer extends React.Component {
 
     render() {
         let actionButton;
-        // TODO: determine the theme here
-        let color = ('light' == 'light') ? grey400 : grey800;
+        let color = ('light' == this.context.theme) ? grey400 : grey700;
 
         if (this.state.stopped) {
             actionButton = (<ArrowBackIcon

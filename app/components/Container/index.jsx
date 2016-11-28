@@ -16,6 +16,14 @@ export default class Container extends React.Component {
         };
     }
 
+    static childContextTypes = {
+        theme: React.PropTypes.string
+    };
+
+    getChildContext() {
+        return {theme: this.state.theme};
+    }
+
     componentWillMount() {
         Config.get('theme', (value) => {
             this.setState({theme: value})
