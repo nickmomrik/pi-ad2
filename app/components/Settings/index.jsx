@@ -148,7 +148,7 @@ export default class Settings extends React.Component {
                     <RadioButtonGroup
                         name="theme"
                         onChange={this.handleTheme}
-                        defaultSelected={this.state.theme}
+                        valueSelected={this.state.theme}
                         style={inlineStyles.radioGroup}
                     >
                         <RadioButton
@@ -177,7 +177,7 @@ export default class Settings extends React.Component {
                     <RadioButtonGroup
                         name="metric"
                         onChange={this.handleMetric}
-                        defaultSelected={this.state.metric}
+                        valueSelected={this.state.metric}
                         style={inlineStyles.radioGroup}
                     >
                         <RadioButton
