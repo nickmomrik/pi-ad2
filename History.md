@@ -1,3 +1,14 @@
+1.2.1 / 2016-11-27
+==================
+
+  * Added main menu.
+  * Better application of the MUI themes.
+  * Store configuration options in files.
+  * Emit spins on app launch, so Settings can use them too.
+  * Add a function for fixing config data screwed up by JSON functions, which set everything as a string.
+  * Reset RPMs when there are no recent spins so that calories and distance don't keep increasing.
+  * Added a Settings screen which allows changing the theme, setting distance default, and tweaking some "listener" settings used to detect rotations of the flywheel.
+
 1.2.0 / 2016-11-25
 ==================
 
