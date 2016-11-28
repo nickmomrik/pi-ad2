@@ -121,21 +121,7 @@ const http = app.listen(port, function onStart(err) {
 const io = require('socket.io')(http);
 
 io.on('connection', function(socket) {
-  debug('connection');
-
-    clapDetector.start({
-        DETECTION_PERCENTAGE_START: '5%',
-        DETECTION_PERCENTAGE_END: '5%',
-        CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
-        CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
-        CLAP_MAX_DURATION: 100
-    });
-
-    clapDetector.onClap(function(history) {
-        debug('detected');
-
-        io.emit('spins', _.map(history, 'time'));
-    });
+    debug('connection');
 
     socket.on('exit', function() {
         debug('exit');
@@ -149,4 +135,18 @@ io.on('connection', function(socket) {
 
         process.exit();
     });
+});
+
+clapDetector.start({
+    DETECTION_PERCENTAGE_START: '5%',
+    DETECTION_PERCENTAGE_END: '5%',
+    CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
+    CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
+    CLAP_MAX_DURATION: 100
+});
+
+clapDetector.onClap(function(history) {
+    debug('detected');
+
+    io.emit('spins', _.map(history, 'time'));
 });
