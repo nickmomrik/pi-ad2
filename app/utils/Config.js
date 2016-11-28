@@ -40,7 +40,7 @@ var Config = (function() {
                             config[k] = Number(config[k]);
                             break;
                         case 'bool':
-                            config[k] = ('true' === config[k]);
+                            config[k] = ('true' === config[k] || true === config[k]);
                             break;
                         case 'string':
                         default:
