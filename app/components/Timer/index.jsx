@@ -1,20 +1,21 @@
 import React from 'react';
+import {Link} from 'react-router';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
-import ExitIcon from 'material-ui/svg-icons/action/exit-to-app';
-import {grey100, grey400} from 'material-ui/styles/colors';
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+import {grey400, grey700} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
-import TimerInfo from 'components/TimerInfo';
+import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
+import Config from 'utils/Config.js';
+import classNames from 'classnames';
 import _ from 'lodash';
+
 const socket = io();
 
 import styles from "./style.scss";
 const inlineStyles = {
-    background: {
-        background: grey100,
-    },
     title: {
         fontSize: 42,
     },
@@ -28,11 +29,23 @@ const inlineStyles = {
     margins: {
         margin: 12,
     },
+    infoTitle: {
+        fontSize: 42,
+        paddingBottom: 10,
+    },
+    container: {
+        padding : 0,
+        width   : '100%',
+    },
+    infoCardTitle: {
+        padding : 0,
+    },
 };
 
-export default class Timer extends React.Component {
-    constructor(props) {
-        super(props);
+class Timer extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+
         this.state = {
             playStart: 0,
             stopped: false,
@@ -47,41 +60,56 @@ export default class Timer extends React.Component {
         };
     }
 
+    static contextTypes = {
+        theme: React.PropTypes.string
+    };
+
+    componentWillMount() {
+        socket.on('spins', this.updateSpins);
+
+        Config.get('metric', function(value) { this.setState({metric: value})}.bind(this));
+    }
+
+    componentWillUnmount() {
+        this.spinsOff();
+    }
+
     timerClick = () => {
-        if (this.state.stopped || this.state.playStart) {
+        if (this.state.playStart) {
             this.setState({confirmOpen: true});
         } else {
-            socket.emit('start');
-
             this.setState({playStart: Date.now()});
 
             // Update the timer every second
             this.interval = setInterval(() => this.everySecond(), 1000);
-
-            socket.on('spins', function (spins) {
-                this.setState({
-                    spins: spins
-                })
-            }.bind(this));
         }
     };
 
-    handleConfirm = () => {
-        console.log('confirm');
-        this.handleCancel();
+    updateSpins = (spins) => {
+        this.setState({
+            spins: spins
+        })
+    };
 
-        if (this.state.stopped) {
-            socket.emit('exit');
-        } else {
+    spinsOff = () => {
+        socket.off('spins', this.updateSpins);
+        socket.disconnect();
+    };
+
+    handleConfirm = () => {
+        if (!this.state.stopped) {
+            this.spinsOff();
+
             this.setState({stopped: true});
 
             // Catch up on the last second before stopping.
             setTimeout(() => clearInterval(this.interval), 1000);
         }
+
+        this.handleCancel();
     };
 
     handleCancel = () => {
-        console.log('cancel');
         this.setState({confirmOpen: false});
     };
 
@@ -91,17 +119,18 @@ export default class Timer extends React.Component {
         let now = Date.now();
 
         // Filter out any spins that were recorded before starting and any in the last second
-        spinTimes = _.filter(spinTimes, function(time) {
+        spinTimes = _.filter(spinTimes, (time) => {
            return time > this.state.playStart && this.state.playStart < (now - 1000);
-        }.bind(this));
+        });
 
         // Skip if we haven't been spinning for at least 2 seconds
         if ( now - this.state.playStart < 2000) {
             spinTimes = [];
-        } else if (spinTimes.len > 1) {
+        } else if (spinTimes.length > 1) {
             // Skip if the last spin was more than 3 second ago.
             if (now - _.last(spinTimes) > 3000) {
                 spinTimes = [];
+                newState.rpms = 0;
             }
         }
 
@@ -190,20 +219,22 @@ export default class Timer extends React.Component {
 
     render() {
         let actionButton;
+        let color = ('light' == this.context.theme) ? grey400 : grey700;
+
         if (this.state.stopped) {
-            actionButton = (<ExitIcon
+            actionButton = (<ArrowBackIcon
                 style={inlineStyles.margins}
-                color={grey400}
+                color={color}
             />);
         } else if (this.state.playStart) {
             actionButton = (<StopIcon
                 style={inlineStyles.margins}
-                color={grey400}
+                color={color}
             />);
         } else {
             actionButton = (<PlayIcon
                 style={inlineStyles.margins}
-                color={grey400}
+                color={color}
             />);
         }
 
@@ -222,31 +253,35 @@ export default class Timer extends React.Component {
             />,
         ];
 
+        let TimerDiv =
+            <Card className="column" containerStyle={inlineStyles.time}>
+                <CardTitle
+                    title={this.time()}
+                    className="time"
+                    titleStyle={inlineStyles.title}
+                    style={inlineStyles.timeTitle}
+                />
+                {actionButton}
+            </Card>;
+        if (this.state.stopped) {
+            TimerDiv = <Link to="/app" className="row">{TimerDiv}</Link>;
+        } else {
+            TimerDiv = <div className="row" onClick={this.timerClick}>{TimerDiv}</div>;
+        }
+
         return (
-            <div className="container">
-                <div className="row" onClick={this.timerClick}>
-                    <Card className="column" containerStyle={inlineStyles.time} style={inlineStyles.background}>
-                        <CardTitle
-                            title={this.time()}
-                            className="time"
-                            titleStyle={inlineStyles.title}
-                            style={inlineStyles.timeTitle}
-                        />
-                        {actionButton}
-                    </Card>
-                </div>
+            <Paper className="container">
+                {TimerDiv}
                 <div className="row" onClick={this.toggleEffortType}>
                     <TimerInfo
                         info={this.calories()}
                         label="Calories"
                         className="column"
-                        style={inlineStyles.background}
                     />
                     <TimerInfo
                         info={this.effort()}
                         label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
                         className="column"
-                        style={inlineStyles.background}
                     />
                 </div>
                 <div className="row" onClick={this.toggleDistanceType}>
@@ -254,13 +289,11 @@ export default class Timer extends React.Component {
                         info={this.speed()}
                         label={this.state.metric ? 'km/h' : 'MPH'}
                         className="column"
-                        style={inlineStyles.background}
                     />
                     <TimerInfo
                         info={this.distance()}
                         label={this.state.metric ? 'km' : 'Miles'}
                         className="column"
-                        style={inlineStyles.background}
                     />
                 </div>
                 <Dialog
@@ -272,7 +305,33 @@ export default class Timer extends React.Component {
                 >
                     Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
                 </Dialog>
-            </div>
+            </Paper>
         );
     }
 }
+
+class TimerInfo extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <Card className={classNames(this.props.className)} containerStyle={inlineStyles.container} style={this.props.style}>
+                <CardTitle
+                    title={this.props.info.toString()}
+                    subtitle={this.props.label}
+                    titleStyle={inlineStyles.infoTitle}
+                    subtitleStyle={inlineStyles.subtitle}
+                    className="timerInfo"
+                    style={inlineStyles.infoCardTitle}
+                />
+            </Card>
+        );
+    }
+}
+
+module.exports = {
+    Timer,
+    TimerInfo,
+};

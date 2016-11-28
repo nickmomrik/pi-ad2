@@ -1,5 +1,13 @@
 /* eslint no-console: 0 */
 
+const fs = require('fs')
+const _ = require('lodash');
+const Config = require('./app/utils/Config');
+var CONFIG = Config.cast(require('./config/default.json'));
+var customConfig = './config/custom.json';
+if (fs.existsSync(customConfig)) {
+    _.assign(CONFIG, Config.cast(require(customConfig)));
+}
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
@@ -12,7 +20,9 @@ const app = express();
 const os = require('os');
 const isLinux = ('Linux' == os.type());
 const debug = require('debug')('pi-ad2');
+var multer  = require('multer')();
 var chromium = null;
+const clapDetector = require('clap-detector');
 
 if (isDeveloping) {
   const compiler = webpack(config);
@@ -32,6 +42,50 @@ if (isDeveloping) {
   app.use(express.static(path.join(__dirname, 'app', 'public')));
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
+
+  // Declare API routes before '*'
+  app.get('/api/config/:option', function(req, res) {
+      var value = null;
+
+      if ('all' == req.params.option) {
+          value = CONFIG;
+      } else if (req.params.option in CONFIG) {
+          value = CONFIG[req.params.option];
+      }
+
+      res.send(value);
+  });
+    app.post('/api/config/:option', multer.array(), function (req, res, next) {
+        if (!req.body) {
+            return res.sendStatus(400)
+        } else {
+            for (var key in req.body) {
+                if (key in CONFIG) {
+                    debug('Saving ' + key + ' config: ' + req.body[key]);
+                    CONFIG[key] = req.body[key];
+                    CONFIG = Config.cast(CONFIG);
+                    fs.writeFile(customConfig, JSON.stringify(CONFIG, null, '\t'), function(err) {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+
+                    if (_.startsWith(key, 'clapDetector')) {
+                        var clapKey = key.replace('Detector', '_') + '_threshold';
+                        clapKey = clapKey.toUpperCase();
+                        var newConfig = {};
+                        newConfig[clapKey] = CONFIG[key];
+                        clapDetector.updateConfig(newConfig);
+                    } else if ( 'theme' == key ) {
+                        io.emit('themeChange', CONFIG[key]);
+                    }
+                }
+            }
+
+            res.sendStatus(200);
+        }
+    });
+
   app.get('/', function response(req, res) {
     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     res.end();
@@ -48,6 +102,12 @@ if (isDeveloping) {
     }
 } else {
   app.use(express.static(__dirname + '/dist'));
+
+  // Declare API routes before '*'
+  app.get('/api/config', function(req, res) {
+    res.json(CONFIG);
+  });
+
   app.get('*', function response(req, res) {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
   });
@@ -61,36 +121,34 @@ const http = app.listen(port, function onStart(err) {
 });
 
 const io = require('socket.io')(http);
-const clapDetector = require('clap-detector');
-const _ = require('lodash');
 
 io.on('connection', function(socket) {
-  debug('connection');
+    debug('connection');
 
-  socket.on('start', function() {
-    debug('start');
+    socket.on('exit', function() {
+        debug('exit');
 
-      clapDetector.start({
-          DETECTION_PERCENTAGE_START: '5%',
-          DETECTION_PERCENTAGE_END: '5%',
-          CLAP_AMPLITUDE_THRESHOLD: 0.1,
-          CLAP_ENERGY_THRESHOLD: 0.8,
-          CLAP_MAX_DURATION: 100
-      });
+        if (isLinux && chromium) {
+          debug('Kill chromium on Linux');
+          chromium.kill('SIGINT');
+        }
 
-      clapDetector.onClap(function(history) {
-          debug('detected');
+        io.close();
 
-          io.emit('spins', _.map(history, 'time'));
-      });
-  }).on('exit', function() {
-    debug('exit');
+        process.exit();
+    });
+});
 
-    if (isLinux && chromium) {
-      debug('Kill chromium on Linux');
-      chromium.kill('SIGINT');
-    }
+clapDetector.start({
+    DETECTION_PERCENTAGE_START: '5%',
+    DETECTION_PERCENTAGE_END: '5%',
+    CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
+    CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
+    CLAP_MAX_DURATION: 100
+});
 
-    process.exit();
-  });
+clapDetector.onClap(function(history) {
+    debug('detected');
+
+    io.emit('spins', _.map(history, 'time'));
 });
