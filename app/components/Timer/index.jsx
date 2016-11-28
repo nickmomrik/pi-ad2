@@ -2,13 +2,12 @@ import React from 'react';
 import {Link} from 'react-router';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import StopIcon from 'material-ui/svg-icons/av/stop';
-import ListIcon from 'material-ui/svg-icons/action/list';
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import {grey400, grey800} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import Config from 'utils/Config.js';
-import ThemeProvider from 'react-theme-provider';
 import classNames from 'classnames';
 import _ from 'lodash';
 
@@ -65,9 +64,13 @@ class Timer extends React.Component {
         Config.get('metric', function(value) { this.setState({metric: value})}.bind(this));
     }
 
-    componentWillUnmount() {
+    spinsOff = () => {
         socket.off('spins', this.updateSpins);
         socket.disconnect();
+    };
+
+    componentWillUnmount() {
+        this.spinsOff();
     }
 
     timerClick = () => {
@@ -88,14 +91,16 @@ class Timer extends React.Component {
     };
 
     handleConfirm = () => {
-        this.handleCancel();
-
         if (!this.state.stopped) {
+            this.spinsOff();
+
             this.setState({stopped: true});
 
             // Catch up on the last second before stopping.
             setTimeout(() => clearInterval(this.interval), 1000);
         }
+
+        this.handleCancel();
     };
 
     handleCancel = () => {
@@ -207,10 +212,11 @@ class Timer extends React.Component {
 
     render() {
         let actionButton;
-        // get active theme here
-        let color = (true) ? grey400 : grey800;
+        // TODO: determine the theme here
+        let color = ('light' == 'light') ? grey400 : grey800;
+
         if (this.state.stopped) {
-            actionButton = (<ListIcon
+            actionButton = (<ArrowBackIcon
                 style={inlineStyles.margins}
                 color={color}
             />);
@@ -258,44 +264,42 @@ class Timer extends React.Component {
         }
 
         return (
-            <ThemeProvider>
-                <div className="container">
-                    {TimerDiv}
-                    <div className="row" onClick={this.toggleEffortType}>
-                        <TimerInfo
-                            info={this.calories()}
-                            label="Calories"
-                            className="column"
-                        />
-                        <TimerInfo
-                            info={this.effort()}
-                            label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
-                            className="column"
-                        />
-                    </div>
-                    <div className="row" onClick={this.toggleDistanceType}>
-                        <TimerInfo
-                            info={this.speed()}
-                            label={this.state.metric ? 'km/h' : 'MPH'}
-                            className="column"
-                        />
-                        <TimerInfo
-                            info={this.distance()}
-                            label={this.state.metric ? 'km' : 'Miles'}
-                            className="column"
-                        />
-                    </div>
-                    <Dialog
-                        title="Please Confirm"
-                        actions={actions}
-                        modal={false}
-                        open={this.state.confirmOpen}
-                        onRequestClose={this.handleCancel}
-                    >
-                        Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
-                    </Dialog>
+            <div className="container">
+                {TimerDiv}
+                <div className="row" onClick={this.toggleEffortType}>
+                    <TimerInfo
+                        info={this.calories()}
+                        label="Calories"
+                        className="column"
+                    />
+                    <TimerInfo
+                        info={this.effort()}
+                        label={'rpm' == this.state.effortType ? 'RPM' : 'Watts'}
+                        className="column"
+                    />
                 </div>
-            </ThemeProvider>
+                <div className="row" onClick={this.toggleDistanceType}>
+                    <TimerInfo
+                        info={this.speed()}
+                        label={this.state.metric ? 'km/h' : 'MPH'}
+                        className="column"
+                    />
+                    <TimerInfo
+                        info={this.distance()}
+                        label={this.state.metric ? 'km' : 'Miles'}
+                        className="column"
+                    />
+                </div>
+                <Dialog
+                    title="Please Confirm"
+                    actions={actions}
+                    modal={false}
+                    open={this.state.confirmOpen}
+                    onRequestClose={this.handleCancel}
+                >
+                    Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
+                </Dialog>
+            </div>
         );
     }
 }
