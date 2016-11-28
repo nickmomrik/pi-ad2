@@ -113,17 +113,18 @@ class Timer extends React.Component {
         let now = Date.now();
 
         // Filter out any spins that were recorded before starting and any in the last second
-        spinTimes = _.filter(spinTimes, function(time) {
+        spinTimes = _.filter(spinTimes, (time) => {
            return time > this.state.playStart && this.state.playStart < (now - 1000);
-        }.bind(this));
+        });
 
         // Skip if we haven't been spinning for at least 2 seconds
         if ( now - this.state.playStart < 2000) {
             spinTimes = [];
-        } else if (spinTimes.len > 1) {
+        } else if (spinTimes.length > 1) {
             // Skip if the last spin was more than 3 second ago.
             if (now - _.last(spinTimes) > 3000) {
                 spinTimes = [];
+                newState.rpms = 0;
             }
         }
 
