@@ -2,12 +2,12 @@
 
 const fs = require('fs')
 const _ = require('lodash');
-var CONFIG = require('./config/default.json');
+const Config = require('./app/utils/Config');
+var CONFIG = Config.cast(require('./config/default.json'));
 var customConfig = './config/custom.json';
 if (fs.existsSync(customConfig)) {
-    _.assign(CONFIG, require(customConfig));
+    _.assign(CONFIG, Config.cast(require(customConfig)));
 }
-
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
@@ -22,6 +22,7 @@ const isLinux = ('Linux' == os.type());
 const debug = require('debug')('pi-ad2');
 var multer  = require('multer')();
 var chromium = null;
+const clapDetector = require('clap-detector');
 
 if (isDeveloping) {
   const compiler = webpack(config);
@@ -44,21 +45,38 @@ if (isDeveloping) {
 
   // Declare API routes before '*'
   app.get('/api/config/:option', function(req, res) {
-      var value = (req.params.option in CONFIG) ? CONFIG[req.params.option] : null;
+      var value = null;
+
+      if ('all' == req.params.option) {
+          value = CONFIG;
+      } else if (req.params.option in CONFIG) {
+          value = CONFIG[req.params.option];
+      }
+
       res.send(value);
   });
     app.post('/api/config/:option', multer.array(), function (req, res, next) {
         if (!req.body) {
             return res.sendStatus(400)
         } else {
-            for (key in req.body) {
+            for (var key in req.body) {
                 if (key in CONFIG) {
+                    debug('Saving ' + key + ' config: ' + req.body[key]);
                     CONFIG[key] = req.body[key];
+                    CONFIG = Config.cast(CONFIG);
                     fs.writeFile(customConfig, JSON.stringify(CONFIG, null, '\t'), function(err) {
                         if (err) {
                             throw err;
                         }
                     });
+
+                    if (_.startsWith(key, 'clapDetector')) {
+                        var clapKey = key.replace('Detector', '_') + '_threshold';
+                        clapKey = clapKey.toUpperCase();
+                        var newConfig = {};
+                        newConfig[clapKey] = CONFIG[key];
+                        clapDetector.updateConfig(newConfig);
+                    }
                 }
             }
 
@@ -101,7 +119,6 @@ const http = app.listen(port, function onStart(err) {
 });
 
 const io = require('socket.io')(http);
-const clapDetector = require('clap-detector');
 
 io.on('connection', function(socket) {
   debug('connection');
