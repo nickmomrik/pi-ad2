@@ -1,6 +1,13 @@
 var Config = (function() {
+    const types = {
+        'theme': "string",
+        'metric': "bool",
+        'clapDetectorAmplitude': "number",
+        'clapDetectorEnergy': "number"
+    };
+
     return {
-        get: function (option, callback) {
+        get: function(option, callback) {
             fetch('/api/config/' + option).then(function(response) {
                 return response.text().then(function(value) {
                     if (value === 'true') {
@@ -23,6 +30,26 @@ var Config = (function() {
                 method: "POST",
                 body: form
             });
+        },
+        // Fixes proper types since the JSON functions make everything a string
+        cast: function(config) {
+            for (var k in config) {
+                if (k in types) {
+                    switch (types[k]) {
+                        case 'number':
+                            config[k] = Number(config[k]);
+                            break;
+                        case 'bool':
+                            config[k] = ('true' === config[k]);
+                            break;
+                        case 'string':
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            return config;
         }
     };
 })();
