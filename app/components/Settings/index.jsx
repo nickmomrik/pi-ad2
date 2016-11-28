@@ -66,7 +66,7 @@ export default class Settings extends React.Component {
         super(props);
 
         this.state = {
-            spinProgress: 0,
+            spinProgress: 8,
             theme: 'light',
             metric: true,
             clapDetectorAmplitude: 0.7,
@@ -190,7 +190,7 @@ export default class Settings extends React.Component {
 
                     <CardTitle
                         title="Spin Detection"
-                        subtitle="Start pedaling & adjust until spins are being counted."
+                        subtitle="Start pedaling & adjust until spins are being shown to the right."
                         titleStyle={inlineStyles.sectionTitle}
                         subtitleStyle={inlineStyles.sectionSubTitle}
                         style={_.merge({}, inlineStyles.section, inlineStyles.spinSection)}
