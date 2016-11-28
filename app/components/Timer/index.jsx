@@ -5,6 +5,7 @@ import StopIcon from 'material-ui/svg-icons/av/stop';
 import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import {grey400, grey800} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
+import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import Config from 'utils/Config.js';
@@ -265,7 +266,7 @@ class Timer extends React.Component {
         }
 
         return (
-            <div className="container">
+            <Paper className="container">
                 {TimerDiv}
                 <div className="row" onClick={this.toggleEffortType}>
                     <TimerInfo
@@ -300,7 +301,7 @@ class Timer extends React.Component {
                 >
                     Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
                 </Dialog>
-            </div>
+            </Paper>
         );
     }
 }
