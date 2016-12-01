@@ -49,6 +49,7 @@ class Timer extends React.Component {
         this.state = {
             seconds: 0,
             playStart: 0,
+            lastSpin: null,
             stopped: false,
             confirmOpen: false,
             spins: [],
@@ -137,25 +138,37 @@ class Timer extends React.Component {
 
     doCalculations(now) {
         let newState = {};
-        // Use spin times during the last 5 seconds.
-        let spinTimes = _.filter(this.state.spins, (time) => {
-            return time > this.state.playStart && time > (now - 5000) && time <= now;
+        let spins = _.filter(this.state.spins, (spin) => {
+            return spin.time > this.state.playStart && spin.time > (now - 5000) && spin.time <= now;
         });
 
-        if (spinTimes.length > 1) {
-            // Skip if the last spin was more than 3 second ago.
-            if (now - _.last(spinTimes) > 2000) {
+        if (spins.length > 1) {
+            if (now - _.last(spins).time > 2000) {
                 newState.rpms = 0;
             } else {
-                newState.rpms = _.round(( 60 / ( ( _.last(spinTimes) - _.head(spinTimes) ) / (spinTimes.length - 1) / 1000 ) ));
+                newState.rpms = _.round(( 60 / ( ( _.last(spins).time - _.head(spins).time ) / (spins.length - 1) / 1000 ) ));
 
-                if (newState.rpms > 0) {
-                    // y = 9.248E-5x^2 - 3.339E-4x - 0.023
-                    // https://jsfiddle.net/nickmomrik/jwcp5eq1/3/
-                    newState.calories = this.state.calories + _.round((0.00009248 * Math.pow(newState.rpms, 2)) + (0.0003339 * newState.rpms) - 0.023, 5);
+                // Calculate calories/miles individually for each new spin
+                let lastSpin = (this.state.lastSpin) ? _.find(spins, ['id', this.state.lastSpin]) : _.head(spins);
+                spins = _.filter(this.state.spins, (spin) => {
+                    return spin.id > lastSpin.id;
+                });
+                newState.miles = this.state.miles;
+                newState.calories = this.state.calories;
+                _.forEach(spins, (spin) => {
+                    let spinTime = spin.time - lastSpin.time;
+                    let rpms = _.round(60 / (spinTime / 1000));
 
-                    newState.miles = this.state.miles + (this.milesSpeed() / 60 / 60);
-                }
+                    newState.miles += (spinTime / 1000) * (this.milesSpeed(newState.rpms) / 60 / 60);
+
+                    // y = 1.035E-4x^2 - 1.605E-3x + 0.022
+                    // https://jsfiddle.net/nickmomrik/jwcp5eq1/7/
+                    newState.calories += (spinTime / 1000) * _.ceil((0.0001035 * Math.pow(rpms, 2)) - (0.001605 * rpms) + 0.022, 3);
+
+                    lastSpin = spin;
+                });
+
+                newState.lastSpin = lastSpin.id;
             }
         }
 
@@ -193,8 +206,11 @@ class Timer extends React.Component {
         return _.round(distance, 2).toFixed(2)
     }
 
-    milesSpeed() {
-        return _.round((this.state.rpms / ( 10 / 3 )), 2)
+    milesSpeed(rpms = 0) {
+        if (0 == rpms) {
+            rpms = this.state.rpms;
+        }
+        return _.round((rpms / ( 10 / 3 )), 2)
     }
 
     speed() {
