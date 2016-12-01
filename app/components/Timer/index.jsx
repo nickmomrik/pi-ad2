@@ -305,7 +305,7 @@ class Timer extends React.Component {
                     open={this.state.confirmOpen}
                     onRequestClose={this.handleCancel}
                 >
-                    Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
+                    Are you sure you want to <strong>Stop</strong>?
                 </Dialog>
             </Paper>
         );
