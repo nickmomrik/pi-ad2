@@ -145,7 +145,7 @@ clapDetector.start({
     CLAP_AMPLITUDE_THRESHOLD: CONFIG.clapDetectorAmplitude,
     CLAP_ENERGY_THRESHOLD: CONFIG.clapDetectorEnergy,
     CLAP_MAX_DURATION: 100,
-    MAX_HISTORY_LENGTH: 20
+    MAX_HISTORY_LENGTH: 12
 });
 
 clapDetector.onClap(function(history) {
