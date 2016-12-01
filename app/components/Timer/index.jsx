@@ -137,11 +137,9 @@ class Timer extends React.Component {
 
     doCalculations(now) {
         let newState = {};
-        let spinTimes = this.state.spins;
-
-        // Only use spins detected after start and before timestamp being processing
-        spinTimes = _.filter(spinTimes, (time) => {
-            return time > this.state.playStart && time <= now;
+        // Use spin times during the last 5 seconds.
+        let spinTimes = _.filter(this.state.spins, (time) => {
+            return time > this.state.playStart && time > (now - 5000) && time <= now;
         });
 
         if (spinTimes.length > 1) {
@@ -149,25 +147,14 @@ class Timer extends React.Component {
             if (now - _.last(spinTimes) > 2000) {
                 newState.rpms = 0;
             } else {
-                let len = spinTimes.length;
-                let maxUse = 5;
-                let start = 0;
-                let intervals = len - 1;
+                newState.rpms = _.round(( 60 / ( ( _.last(spinTimes) - _.head(spinTimes) ) / (spinTimes.length - 1) / 1000 ) ));
 
-                if (len > 2) {
-                    if (len >= maxUse) {
-                        start = len - maxUse;
-                        intervals = maxUse - 1;
-                    }
+                if (newState.rpms > 0) {
+                    // y = 9.248E-5x^2 - 3.339E-4x - 0.023
+                    // https://jsfiddle.net/nickmomrik/jwcp5eq1/3/
+                    newState.calories = this.state.calories + _.round((0.00009248 * Math.pow(newState.rpms, 2)) + (0.0003339 * newState.rpms) - 0.023, 5);
 
-                    newState.rpms = _.round(( 60 / ( ( spinTimes[len - 1] - spinTimes[start] ) / intervals / 1000 ) ));
-
-                    if (newState.rpms > 0) {
-                        // y = 9.396E-5x^2 + 6.583E-4x - 0.084 from Google chart trendline
-                        newState.calories = this.state.calories + _.round((0.00009396 * Math.pow(newState.rpms, 2)) + (0.0006583 * newState.rpms) - 0.084, 5);
-
-                        newState.miles = this.state.miles + (this.milesSpeed() / 60 / 60);
-                    }
+                    newState.miles = this.state.miles + (this.milesSpeed() / 60 / 60);
                 }
             }
         }
