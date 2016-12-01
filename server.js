@@ -151,5 +151,5 @@ clapDetector.start({
 clapDetector.onClap(function(history) {
     debug('detected');
 
-    io.emit('spins', _.map(history, 'time'));
+    io.emit('spins', history);
 });
