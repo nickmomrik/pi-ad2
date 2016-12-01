@@ -147,7 +147,6 @@ class Timer extends React.Component {
         if (spinTimes.length > 1) {
             // Skip if the last spin was more than 3 second ago.
             if (now - _.last(spinTimes) > 2000) {
-                spinTimes = [];
                 newState.rpms = 0;
             } else {
                 let len = spinTimes.length;
