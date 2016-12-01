@@ -47,6 +47,7 @@ class Timer extends React.Component {
         super(props, context);
 
         this.state = {
+            seconds: 0,
             playStart: 0,
             stopped: false,
             confirmOpen: false,
@@ -78,10 +79,11 @@ class Timer extends React.Component {
         if (this.state.playStart) {
             this.setState({confirmOpen: true});
         } else {
-            this.setState({playStart: Date.now()});
+            this.setState({
+                playStart: Date.now(),
+            });
 
-            // Update the timer every second
-            this.interval = setInterval(() => this.everySecond(), 1000);
+            setTimeout(this.everySecond, 200);
         }
     };
 
@@ -101,9 +103,6 @@ class Timer extends React.Component {
             this.spinsOff();
 
             this.setState({stopped: true});
-
-            // Catch up on the last second before stopping.
-            setTimeout(() => clearInterval(this.interval), 1000);
         }
 
         this.handleCancel();
@@ -113,46 +112,63 @@ class Timer extends React.Component {
         this.setState({confirmOpen: false});
     };
 
-    everySecond() {
-        let newState = {seconds: this.state.seconds + 1};
-        let spinTimes = this.state.spins;
-        let now = Date.now();
-
-        // Filter out any spins that were recorded before starting and any in the last second
-        spinTimes = _.filter(spinTimes, (time) => {
-           return time > this.state.playStart && this.state.playStart < (now - 1000);
-        });
-
-        // Skip if we haven't been spinning for at least 2 seconds
-        if ( now - this.state.playStart < 2000) {
-            spinTimes = [];
-        } else if (spinTimes.length > 1) {
-            // Skip if the last spin was more than 3 second ago.
-            if (now - _.last(spinTimes) > 3000) {
-                spinTimes = [];
-                newState.rpms = 0;
-            }
+    everySecond = () => {
+        if (this.state.stopped) {
+            return;
         }
 
+        let now = Date.now();
+        let elapsed = now - this.state.playStart - (1000 * this.state.seconds);
+        let shift = elapsed % 200;
+        if (elapsed < (shift * 200)) {
+            shift = shift - 200;
+        }
+        setTimeout(this.everySecond, 200 - shift);
+
+        if (5 <= _.round(elapsed / 200)) {
+            let seconds = _.round((now - this.state.playStart) / 1000);
+            this.setState({
+                seconds: seconds,
+            });
+
+            this.doCalculations(this.state.playStart + (seconds * 1000));
+        }
+    };
+
+    doCalculations(now) {
+        let newState = {};
+        let spinTimes = this.state.spins;
+
+        // Only use spins detected after start and before timestamp being processing
+        spinTimes = _.filter(spinTimes, (time) => {
+            return time > this.state.playStart && time <= now;
+        });
+
         if (spinTimes.length > 1) {
-            let len = spinTimes.length;
-            let maxUse = 4;
-            let start = 0;
-            let intervals = len - 1;
+            // Skip if the last spin was more than 3 second ago.
+            if (now - _.last(spinTimes) > 2000) {
+                spinTimes = [];
+                newState.rpms = 0;
+            } else {
+                let len = spinTimes.length;
+                let maxUse = 5;
+                let start = 0;
+                let intervals = len - 1;
 
-            if (len > 2) {
-                if (len >= maxUse) {
-                    start = len - maxUse;
-                    intervals = maxUse - 1;
-                }
+                if (len > 2) {
+                    if (len >= maxUse) {
+                        start = len - maxUse;
+                        intervals = maxUse - 1;
+                    }
 
-                newState.rpms = _.round(( 60 / ( ( spinTimes[len - 1] - spinTimes[start] ) / intervals / 1000 ) ));
+                    newState.rpms = _.round(( 60 / ( ( spinTimes[len - 1] - spinTimes[start] ) / intervals / 1000 ) ));
 
-                if (newState.rpms > 0) {
-                    // y = 9.396E-5x^2 + 6.583E-4x - 0.084 from Google chart trendline
-                    newState.calories = this.state.calories + _.round((0.00009396 * Math.pow(newState.rpms, 2)) + (0.0006583 * newState.rpms) - 0.084, 5);
+                    if (newState.rpms > 0) {
+                        // y = 9.396E-5x^2 + 6.583E-4x - 0.084 from Google chart trendline
+                        newState.calories = this.state.calories + _.round((0.00009396 * Math.pow(newState.rpms, 2)) + (0.0006583 * newState.rpms) - 0.084, 5);
 
-                    newState.miles = this.state.miles + (this.milesSpeed() / 60 / 60);
+                        newState.miles = this.state.miles + (this.milesSpeed() / 60 / 60);
+                    }
                 }
             }
         }
