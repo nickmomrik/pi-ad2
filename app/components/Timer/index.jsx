@@ -47,7 +47,9 @@ class Timer extends React.Component {
         super(props, context);
 
         this.state = {
+            seconds: 0,
             playStart: 0,
+            lastSpin: null,
             stopped: false,
             confirmOpen: false,
             spins: [],
@@ -78,10 +80,11 @@ class Timer extends React.Component {
         if (this.state.playStart) {
             this.setState({confirmOpen: true});
         } else {
-            this.setState({playStart: Date.now()});
+            this.setState({
+                playStart: Date.now(),
+            });
 
-            // Update the timer every second
-            this.interval = setInterval(() => this.everySecond(), 1000);
+            setTimeout(this.everySecond, 200);
         }
     };
 
@@ -101,9 +104,6 @@ class Timer extends React.Component {
             this.spinsOff();
 
             this.setState({stopped: true});
-
-            // Catch up on the last second before stopping.
-            setTimeout(() => clearInterval(this.interval), 1000);
         }
 
         this.handleCancel();
@@ -113,47 +113,62 @@ class Timer extends React.Component {
         this.setState({confirmOpen: false});
     };
 
-    everySecond() {
-        let newState = {seconds: this.state.seconds + 1};
-        let spinTimes = this.state.spins;
-        let now = Date.now();
-
-        // Filter out any spins that were recorded before starting and any in the last second
-        spinTimes = _.filter(spinTimes, (time) => {
-           return time > this.state.playStart && this.state.playStart < (now - 1000);
-        });
-
-        // Skip if we haven't been spinning for at least 2 seconds
-        if ( now - this.state.playStart < 2000) {
-            spinTimes = [];
-        } else if (spinTimes.length > 1) {
-            // Skip if the last spin was more than 3 second ago.
-            if (now - _.last(spinTimes) > 3000) {
-                spinTimes = [];
-                newState.rpms = 0;
-            }
+    everySecond = () => {
+        if (this.state.stopped) {
+            return;
         }
 
-        if (spinTimes.length > 1) {
-            let len = spinTimes.length;
-            let maxUse = 4;
-            let start = 0;
-            let intervals = len - 1;
+        let now = Date.now();
+        let elapsed = now - this.state.playStart - (1000 * this.state.seconds);
+        let shift = elapsed % 200;
+        if (elapsed < (shift * 200)) {
+            shift = shift - 200;
+        }
+        setTimeout(this.everySecond, 200 - shift);
 
-            if (len > 2) {
-                if (len >= maxUse) {
-                    start = len - maxUse;
-                    intervals = maxUse - 1;
-                }
+        if (5 <= _.round(elapsed / 200)) {
+            let seconds = _.round((now - this.state.playStart) / 1000);
+            this.setState({
+                seconds: seconds,
+            });
 
-                newState.rpms = _.round(( 60 / ( ( spinTimes[len - 1] - spinTimes[start] ) / intervals / 1000 ) ));
+            this.doCalculations(this.state.playStart + (seconds * 1000));
+        }
+    };
 
-                if (newState.rpms > 0) {
-                    // y = 9.396E-5x^2 + 6.583E-4x - 0.084 from Google chart trendline
-                    newState.calories = this.state.calories + _.round((0.00009396 * Math.pow(newState.rpms, 2)) + (0.0006583 * newState.rpms) - 0.084, 5);
+    doCalculations(now) {
+        let newState = {};
+        let spins = _.filter(this.state.spins, (spin) => {
+            return spin.time > this.state.playStart && spin.time > (now - 5000) && spin.time <= now;
+        });
 
-                    newState.miles = this.state.miles + (this.milesSpeed() / 60 / 60);
-                }
+        if (spins.length > 1) {
+            if (now - _.last(spins).time > 2000) {
+                newState.rpms = 0;
+            } else {
+                newState.rpms = _.round(( 60 / ( ( _.last(spins).time - _.head(spins).time ) / (spins.length - 1) / 1000 ) ));
+
+                // Calculate calories/miles individually for each new spin
+                let lastSpin = (this.state.lastSpin) ? _.find(spins, ['id', this.state.lastSpin]) : _.head(spins);
+                spins = _.filter(this.state.spins, (spin) => {
+                    return spin.id > lastSpin.id;
+                });
+                newState.miles = this.state.miles;
+                newState.calories = this.state.calories;
+                _.forEach(spins, (spin) => {
+                    let spinTime = spin.time - lastSpin.time;
+                    let rpms = _.round(60 / (spinTime / 1000));
+
+                    newState.miles += (spinTime / 1000) * (this.milesSpeed(newState.rpms) / 60 / 60);
+
+                    // y = 1.035E-4x^2 - 1.605E-3x + 0.022
+                    // https://jsfiddle.net/nickmomrik/jwcp5eq1/7/
+                    newState.calories += (spinTime / 1000) * _.ceil((0.0001035 * Math.pow(rpms, 2)) - (0.001605 * rpms) + 0.022, 3);
+
+                    lastSpin = spin;
+                });
+
+                newState.lastSpin = lastSpin.id;
             }
         }
 
@@ -191,8 +206,11 @@ class Timer extends React.Component {
         return _.round(distance, 2).toFixed(2)
     }
 
-    milesSpeed() {
-        return _.round((this.state.rpms / ( 10 / 3 )), 2)
+    milesSpeed(rpms = 0) {
+        if (0 == rpms) {
+            rpms = this.state.rpms;
+        }
+        return _.round((rpms / ( 10 / 3 )), 2)
     }
 
     speed() {
@@ -303,7 +321,7 @@ class Timer extends React.Component {
                     open={this.state.confirmOpen}
                     onRequestClose={this.handleCancel}
                 >
-                    Are you sure you want to <strong>{this.state.stopped ? 'Exit' : 'Stop'}</strong>?
+                    Are you sure you want to <strong>Stop</strong>?
                 </Dialog>
             </Paper>
         );
