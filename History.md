@@ -1,3 +1,11 @@
+1.2.2 / 2016-12-01
+==================
+
+  * Handle any time interval drift.
+  * Add sample data and sound files.
+  * Remove underline decoration from timer stopwatch after stopping.
+  * Another overhaul of calorie calculations. Updated formula with a 1.0 coefficient of determination using the metronome sample data. Calculate calories and distance with every new spin of the flywheel.
+
 1.2.1 / 2016-11-27
 ==================
 
