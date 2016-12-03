@@ -1,6 +1,10 @@
 # Pi AD2
 A replacement monitor for the Schwinn Airdyne AD2, built for a Raspberry Pi. It actually can run completely fine on a Mac as well, where I'm doing all of my development.
 
+I wrote a series of posts about the journey of creating this app. Start with [Part 1](https://nickmomrik.com/2016/11/25/building-a-better-interface-for-the-airdyne-ad2-with-a-raspberry-pi/) if you're interested.
+
+For recent info, check out the [Pi AD2 tag](https://nickmomrik.com/tag/pi-ad2/) on my blog.
+
 # Requirements
 Uses [ClapDetector](https://github.com/tom-s/clap-detector), which requires `sox`. See the ClapDetector instructions for installing `sox` on Linux or Mac.
 
