@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Pi-AD2
+Name=Pi AD2
 Comment=Launch Pi-AD2
 Exec=/home/pi/pi-ad2/misc/launch.sh
 Icon=/home/pi/pi-ad2/misc/timer.svg
