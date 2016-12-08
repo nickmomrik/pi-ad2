@@ -3,7 +3,8 @@ import {Link} from 'react-router';
 import {Card, CardTitle} from 'material-ui/Card';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import Slider from 'material-ui/Slider';
-import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+import ArrowBackIcon from 'genericons-neue-react/icons/previous';
+import IconButton from 'material-ui/IconButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import {grey100, grey900} from 'material-ui/styles/colors';
 import Config from 'utils/Config';
@@ -58,6 +59,10 @@ const inlineStyles = {
     progress: {
         float: 'right',
         marginRight: 20,
+    },
+    icon: {
+        height: 56,
+        width: 56,
     },
 };
 
@@ -137,7 +142,9 @@ export default class Settings extends React.Component {
         return (
                 <Card style={inlineStyles.card}>
                     <Link to="/app" onClick={this.spinsOff}>
-                        <ArrowBackIcon color={color} />
+                        <IconButton style={inlineStyles.icon}>
+                            <ArrowBackIcon fill={color} />
+                        </IconButton>
                     </Link>
 
                     <CardTitle

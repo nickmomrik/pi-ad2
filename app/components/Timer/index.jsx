@@ -1,8 +1,9 @@
 import React from 'react';
 import {Link} from 'react-router';
-import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
-import StopIcon from 'material-ui/svg-icons/av/stop';
-import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+import PlayIcon from 'genericons-neue-react/icons/play';
+import StopIcon from 'genericons-neue-react/icons/stop';
+import ArrowBackIcon from 'genericons-neue-react/icons/previous';
+import IconButton from 'material-ui/IconButton';
 import {grey400, grey700} from 'material-ui/styles/colors';
 import {Card, CardTitle} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
@@ -39,6 +40,10 @@ const inlineStyles = {
     },
     infoCardTitle: {
         padding : 0,
+    },
+    icon: {
+        height: 56,
+        width: 56,
     },
 };
 
@@ -240,20 +245,11 @@ class Timer extends React.Component {
         let color = ('light' == this.context.theme) ? grey400 : grey700;
 
         if (this.state.stopped) {
-            actionButton = (<ArrowBackIcon
-                style={inlineStyles.margins}
-                color={color}
-            />);
+            actionButton = (<ArrowBackIcon fill={color} />);
         } else if (this.state.playStart) {
-            actionButton = (<StopIcon
-                style={inlineStyles.margins}
-                color={color}
-            />);
+            actionButton = (<StopIcon fill={color} />);
         } else {
-            actionButton = (<PlayIcon
-                style={inlineStyles.margins}
-                color={color}
-            />);
+            actionButton = (<PlayIcon fill={color} />);
         }
 
         const actions = [
@@ -279,7 +275,9 @@ class Timer extends React.Component {
                     titleStyle={inlineStyles.title}
                     style={inlineStyles.timeTitle}
                 />
-                {actionButton}
+                <IconButton style={inlineStyles.icon}>
+                    {actionButton}
+                </IconButton>
             </Card>;
         if (this.state.stopped) {
             TimerDiv = <Link to="/app" className="row">{TimerDiv}</Link>;
