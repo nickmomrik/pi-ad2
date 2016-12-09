@@ -6,7 +6,8 @@ I wrote a series of posts about the journey of creating this app. Start with [Pa
 For recent info, check out the [Pi AD2 tag](https://nickmomrik.com/tag/pi-ad2/) on my blog.
 
 # Requirements
-Uses [ClapDetector](https://github.com/tom-s/clap-detector), which requires `sox`. See the ClapDetector instructions for installing `sox` on Linux or Mac.
+1. Uses [ClapDetector](https://github.com/tom-s/clap-detector), which requires `sox`. See the ClapDetector instructions for installing `sox` on Linux or Mac.
+1. [Node.js](https://nodejs.org/en/download/package-manager/)
 
 # Installation
 This process sucks. Working on getting the production build to run.
