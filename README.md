@@ -5,22 +5,49 @@ I wrote a series of posts about the journey of creating this app. Start with [Pa
 
 For recent info, check out the [Pi AD2 tag](https://nickmomrik.com/tag/pi-ad2/) on my blog.
 
-# Requirements
-1. Uses [ClapDetector](https://github.com/tom-s/clap-detector), which requires `sox`. See the ClapDetector instructions for installing `sox` on Linux or Mac.
-1. [Node.js](https://nodejs.org/en/download/package-manager/)
+## Note
+When using the app, take the cable out of the Airdyne monitor and use a USB sound adapter to connect it to your Raspberry Pi or Mac. [This one made by Sabrant](http://a.co/aTtDN68) works great for me on both platforms.
 
-# Installation
-This process sucks. Working on getting the production build to run.
+## Installation
+1. Install [Node.js](https://nodejs.org/en/download/package-manager/)
+1. Install `sox`, a sound processing program, which is used to "listen" for each rotation of the flywheel.
+    ##### Linux
+    ```bash
+    sudo apt-get update
+    sudo apt-get install sox
+    ```
+    ##### Mac OS X
+    Install [Homebrew](http://brew.sh/) first and then sox.
+    ```bash
+    brew install sox
+    ```
+1. Change to a directory where you want to install the program (home directory works fine)
 
-1. Clone to `/home/pi/`
-1. Run `cd /home/pi/pi-ad2` and then `npm install`
-1. Run `cp misc/pi-ad2.desktop ~/Desktop`
-1. Launch with the desktop shortcut. It may take 10+ seconds for Chromium to open, due to the build process.
+   ```bash
+   cd ~
+   git clone https://github.com/nickmomrik/pi-ad2.git
+   ```
+1. Here are some different ways to start the app:
+    1. Mac or Linux (from inside the install directory)
 
-# Other helpful install items
+        ```bash
+        npm run prod
+        ```
+        Copy the URL it gives you back and open the page in your browser. Linux will attempt to launch Chromium for you.
+    1. Linux only: If you would like a desktop shortcut for launching the app:
+        ```bash
+        ./linux-create-desktop-shortcut.sh
+        ```
+    1. Linux only: To make the app launch on boot:
+        ```bash
+        ./linux-setup-launch-on-boot.sh
+        ```
+1. The first time you use the app, make sure to go to Settings and test it is recognizing flywheel rotations. You may need to adjust the sliders until you find a sweet spot.
+
+## Other useful install/config items
 
 1. [Clutter](https://wiki.archlinux.org/index.php/Unclutter) hides your X mouse cursor when you do not need it.
-1. [Disable screen blarking](https://www.raspberrypi.org/forums/viewtopic.php?f=91&t=57552).
+1. [Disable screen blanking](https://www.raspberrypi.org/forums/viewtopic.php?f=91&t=57552) so you can keep seeing the display during longer workouts.
 
-# License
+## License
 *Pi AD2* is licensed under [GNU General Public License v3](./LICENSE.md).
