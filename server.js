@@ -18,26 +18,7 @@ const multer  = require('multer')();
 let chromium = null;
 const clapDetector = require('clap-detector');
 
-if (isDeveloping) {
-	const compiler = webpack(config);
-	const middleware = webpackMiddleware(compiler, {
-		publicPath: config.output.publicPath,
-		contentBase: 'src',
-		stats: {
-			colors: true,
-			hash: false,
-			timings: true,
-			chunks: false,
-			chunkModules: false,
-			modules: false
-		}
-	});
-
-	app.use(express.static(path.join(__dirname, 'app', 'public')));
-	app.use(middleware);
-	app.use(webpackHotMiddleware(compiler));
-
-	// Declare API routes before '*'
+function api_routes() {
 	app.get('/api/config/:option', function(req, res) {
 		let value = null;
 
@@ -49,6 +30,7 @@ if (isDeveloping) {
 
 		res.send(value);
 	});
+
 	app.post('/api/config/:option', multer.array(), function (req, res, next) {
 		if (!req.body) {
 			return res.sendStatus(400)
@@ -75,6 +57,28 @@ if (isDeveloping) {
 			res.sendStatus(200);
 		}
 	});
+}
+
+if (isDeveloping) {
+	const compiler = webpack(config);
+	const middleware = webpackMiddleware(compiler, {
+		publicPath: config.output.publicPath,
+		contentBase: 'src',
+		stats: {
+			colors: true,
+			hash: false,
+			timings: true,
+			chunks: false,
+			chunkModules: false,
+			modules: false
+		}
+	});
+
+	app.use(express.static(path.join(__dirname, 'app', 'public')));
+	app.use(middleware);
+	app.use(webpackHotMiddleware(compiler));
+
+    api_routes();
 
 	app.get('/', function response(req, res) {
 		res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
@@ -93,10 +97,7 @@ if (isDeveloping) {
 } else {
 	app.use(express.static(__dirname + '/dist'));
 
-	// Declare API routes before '*'
-	app.get('/api/config', function(req, res) {
-		res.json(CONFIG);
-	});
+	api_routes();
 
 	app.get('*', function response(req, res) {
 		res.sendFile(path.join(__dirname, 'dist/index.html'));
