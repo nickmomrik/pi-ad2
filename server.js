@@ -59,6 +59,14 @@ function api_routes() {
 	});
 }
 
+function maybe_start_chromium() {
+	if (!chromium) {
+		debug('Starting chromium on Linux');
+		const proc = require('child_process');
+		chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:' + port]);
+	}
+}
+
 if (isDeveloping) {
 	const compiler = webpack(config);
 	const middleware = webpackMiddleware(compiler, {
@@ -86,11 +94,7 @@ if (isDeveloping) {
 
 	if (isLinux) {
 		middleware.waitUntilValid(function () {
-			if (!chromium) {
-				debug('Starting chromium on Linux');
-				const proc = require('child_process');
-				chromium = proc.spawn('chromium-browser', ['--noerrdialogs', '--kiosk', 'http://localhost:' + port]);
-			}
+			maybe_start_chromium();
 		});
 	}
 } else {
@@ -101,6 +105,10 @@ if (isDeveloping) {
 	app.get('*', function response(req, res) {
 		res.sendFile(path.join(__dirname, 'dist/index.html'));
 	});
+
+	if (isLinux) {
+		maybe_start_chromium();
+	}
 }
 
 const http = app.listen(port, function onStart(err) {
