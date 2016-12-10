@@ -44,6 +44,3 @@ input.wav
 
 # build
 dist
-
-# config
-config/custom.json
