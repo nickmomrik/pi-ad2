@@ -1,4 +1,4 @@
-var Config = (function() {
+let Config = (function() {
     const types = {
         'theme': "string",
         'metric': "bool",
@@ -23,7 +23,7 @@ var Config = (function() {
             });
         },
         put: function(option, value) {
-            var form = new FormData();
+            let form = new FormData();
             form.append(option, value);
             // Should probably test the result here
             fetch('/api/config/' + option, {
@@ -33,7 +33,7 @@ var Config = (function() {
         },
         // Fixes proper types since the JSON functions make everything a string
         cast: function(config) {
-            for (var k in config) {
+            for (let k in config) {
                 if (k in types) {
                     switch (types[k]) {
                         case 'number':
