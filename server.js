@@ -4,7 +4,7 @@ const fs = require('fs')
 const _ = require('lodash');
 const Config = require('./app/utils/Config');
 let CONFIG = {
-    "theme": "dark",
+    "theme": "light",
     "metric": true,
     "clapDetectorAmplitude": 0.1,
     "clapDetectorEnergy": 0.8
