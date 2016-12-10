@@ -8,25 +8,25 @@ module.exports = {
     devtool: 'eval-source-map',
     entry: [
         'webpack-hot-middleware/client?reload=true',
-        path.join(__dirname, 'app/main.jsx')
+        path.join(__dirname, 'app/main.jsx'),
     ],
     output: {
         path: path.join(__dirname, '/dist/'),
         filename: '[name].js',
-        publicPath: path.join(__dirname, 'app', 'public')
+        publicPath: path.join(__dirname, 'app', 'public'),
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: 'app/index.tpl.html',
             inject: 'body',
-            filename: 'index.html'
+            filename: 'index.html',
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
-        })
+            'process.env.NODE_ENV': JSON.stringify('development'),
+        }),
     ],
     module: {
         loaders: [
@@ -35,25 +35,45 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: 'babel',
                 query: {
-                    "presets": ["react", "es2015", "stage-0", "react-hmre"]
-                }
+                    "presets": [
+                        "react",
+                        "es2015",
+                        "stage-0",
+                        "react-hmre",
+                    ],
+                },
             }, {
                 test: /\.json$/,
-                loader: 'json'
+                loader: 'json',
             }, {
                 test: /\.css$/,
-                loaders: ['style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]', 'sass']
+                loaders: [
+                    'style',
+                    'css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
+                    'sass',
+                ],
             }, {
                 test: /\.scss$/,
-                loaders: ['style', 'css', 'sass']
-            }
-        ]
+                loaders: [
+                    'style',
+                    'css',
+                    'sass',
+                ],
+            },
+        ],
     },
     resolve: {
-        extensions: ['', '.js', '.jsx'],
-        modulesDirectories: ['node_modules', './app']
+        extensions: [
+            '',
+            '.js',
+            '.jsx',
+        ],
+        modulesDirectories: [
+            'node_modules',
+            './app',
+        ],
     },
     node: {
-        fs: "empty"
-    }
+        fs: "empty",
+    },
 };
