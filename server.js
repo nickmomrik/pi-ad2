@@ -10,7 +10,7 @@ const webpackMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
 const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? 3000 : process.env.PORT;
+const port = isDeveloping ? 3000 : process.env.PORT || 3000;
 const app = express();
 const isLinux = ('Linux' == os.type());
 const debug = require('debug')('pi-ad2');
