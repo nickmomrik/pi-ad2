@@ -3,7 +3,13 @@
 const fs = require('fs')
 const _ = require('lodash');
 const Config = require('./app/utils/Config');
-var CONFIG = Config.cast(require('./config/default.json'));
+var CONFIG = {
+    "theme": "dark",
+    "metric": true,
+    "clapDetectorAmplitude": 0.1,
+    "clapDetectorEnergy": 0.8
+};
+CONFIG = Config.cast(CONFIG);
 var customConfig = './config/custom.json';
 if (fs.existsSync(customConfig)) {
     _.assign(CONFIG, Config.cast(require(customConfig)));
