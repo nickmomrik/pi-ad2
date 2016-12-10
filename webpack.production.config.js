@@ -6,13 +6,10 @@ let HtmlWebpackPlugin = require('html-webpack-plugin');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-	entry: [
-		path.join(__dirname, 'app/main.jsx'),
-	],
+	entry: path.join(__dirname, 'app/main.jsx'),
 	output: {
 		path: path.join(__dirname, '/dist/'),
-		filename: '[name]-[hash].min.js',
-		publicPath: '/',
+		filename: 'client-[hash].min.js',
 	},
 	plugins: [
 		new webpack.optimize.OccurenceOrderPlugin(),
