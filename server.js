@@ -115,7 +115,7 @@ const http = app.listen(port, function onStart(err) {
 	if (err) {
 		console.log(err);
 	}
-	console.info('==> Listening on port %s.', port);
+	console.info('==> Open http://localhost:%s in your browser.', port);
 });
 
 const io = require('socket.io')(http);
