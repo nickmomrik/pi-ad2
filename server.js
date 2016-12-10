@@ -1,20 +1,9 @@
-/* eslint no-console: 0 */
-
-const fs = require('fs')
 const _ = require('lodash');
-const Config = require('./app/utils/Config');
-let CONFIG = {
-    "theme": "light",
-    "metric": true,
-    "clapDetectorAmplitude": 0.1,
-    "clapDetectorEnergy": 0.8
-};
-CONFIG = Config.cast(CONFIG);
-let customConfig = './config/custom.json';
-if (fs.existsSync(customConfig)) {
-    _.assign(CONFIG, Config.cast(require(customConfig)));
-}
+const os = require('os');
 const path = require('path');
+const Config = require('./app/utils/Config');
+const configPath = path.join(os.homedir(), '.pi-ad2');
+let CONFIG = Config.settings(configPath);
 const express = require('express');
 const webpack = require('webpack');
 const webpackMiddleware = require('webpack-dev-middleware');
@@ -23,7 +12,6 @@ const config = require('./webpack.config.js');
 const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
-const os = require('os');
 const isLinux = ('Linux' == os.type());
 const debug = require('debug')('pi-ad2');
 const multer  = require('multer')();
@@ -70,11 +58,7 @@ if (isDeveloping) {
                     debug('Saving ' + key + ' config: ' + req.body[key]);
                     CONFIG[key] = req.body[key];
                     CONFIG = Config.cast(CONFIG);
-                    fs.writeFile(customConfig, JSON.stringify(CONFIG, null, '\t'), function(err) {
-                        if (err) {
-                            throw err;
-                        }
-                    });
+                    Config.saveCustomSettings(CONFIG, configPath);
 
                     if (_.startsWith(key, 'clapDetector')) {
                         let clapKey = key.replace('Detector', '_') + '_threshold';

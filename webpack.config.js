@@ -38,7 +38,7 @@ module.exports = {
             "presets": ["react", "es2015", "stage-0", "react-hmre"]
           }
         }, {
-          test: /\.json?$/,
+          test: /\.json$/,
           loader: 'json'
         }, {
             test: /\.css$/,
@@ -52,5 +52,8 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx'],
     modulesDirectories: ['node_modules', './app']
+  },
+  node: {
+    fs: "empty"
   }
 };
