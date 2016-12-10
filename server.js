@@ -3,14 +3,14 @@
 const fs = require('fs')
 const _ = require('lodash');
 const Config = require('./app/utils/Config');
-var CONFIG = {
+let CONFIG = {
     "theme": "dark",
     "metric": true,
     "clapDetectorAmplitude": 0.1,
     "clapDetectorEnergy": 0.8
 };
 CONFIG = Config.cast(CONFIG);
-var customConfig = './config/custom.json';
+let customConfig = './config/custom.json';
 if (fs.existsSync(customConfig)) {
     _.assign(CONFIG, Config.cast(require(customConfig)));
 }
@@ -26,8 +26,8 @@ const app = express();
 const os = require('os');
 const isLinux = ('Linux' == os.type());
 const debug = require('debug')('pi-ad2');
-var multer  = require('multer')();
-var chromium = null;
+const multer  = require('multer')();
+let chromium = null;
 const clapDetector = require('clap-detector');
 
 if (isDeveloping) {
@@ -51,7 +51,7 @@ if (isDeveloping) {
 
   // Declare API routes before '*'
   app.get('/api/config/:option', function(req, res) {
-      var value = null;
+      let value = null;
 
       if ('all' == req.params.option) {
           value = CONFIG;
@@ -65,7 +65,7 @@ if (isDeveloping) {
         if (!req.body) {
             return res.sendStatus(400)
         } else {
-            for (var key in req.body) {
+            for (let key in req.body) {
                 if (key in CONFIG) {
                     debug('Saving ' + key + ' config: ' + req.body[key]);
                     CONFIG[key] = req.body[key];
@@ -77,9 +77,9 @@ if (isDeveloping) {
                     });
 
                     if (_.startsWith(key, 'clapDetector')) {
-                        var clapKey = key.replace('Detector', '_') + '_threshold';
+                        let clapKey = key.replace('Detector', '_') + '_threshold';
                         clapKey = clapKey.toUpperCase();
-                        var newConfig = {};
+                        let newConfig = {};
                         newConfig[clapKey] = CONFIG[key];
                         clapDetector.updateConfig(newConfig);
                     } else if ( 'theme' == key ) {
