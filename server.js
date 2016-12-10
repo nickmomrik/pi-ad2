@@ -74,7 +74,6 @@ if (isDeveloping) {
 		}
 	});
 
-	app.use(express.static(path.join(__dirname, 'app', 'public')));
 	app.use(middleware);
 	app.use(webpackHotMiddleware(compiler));
 

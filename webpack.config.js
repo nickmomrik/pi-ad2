@@ -59,6 +59,9 @@ module.exports = {
 					'css',
 					'sass',
 				],
+			}, {
+				test: /\.jpe?g$/,
+				loader: 'file',
 			},
 		],
 	},

@@ -4,7 +4,6 @@ let path = require('path');
 let webpack = require('webpack');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
-let StatsPlugin = require('stats-webpack-plugin');
 
 module.exports = {
 	entry: [
@@ -28,10 +27,6 @@ module.exports = {
 				warnings: false,
 				screw_ie8: true,
 			},
-		}),
-		new StatsPlugin('webpack.stats.json', {
-			source: false,
-			modules: false,
 		}),
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -63,10 +58,27 @@ module.exports = {
 			}, {
 				test: /\.css$/,
 				loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss!sass')
+			}, {
+				test: /\.jpe?g$/,
+				loader: 'file',
 			},
 		],
 	},
 	postcss: [
 		require('autoprefixer'),
 	],
+	resolve: {
+		extensions: [
+			'',
+			'.js',
+			'.jsx',
+		],
+		modulesDirectories: [
+			'node_modules',
+			'./app',
+		],
+	},
+	node: {
+		fs: "empty",
+	},
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import {Card, CardMedia} from 'material-ui/Card';
 import SplashOverlay from 'components/Splash/SplashOverlay';
+const image = require('images/pi-ad2-blend.jpg');
 
 const inlineStyles = {
 	overlay: {
@@ -18,7 +19,7 @@ export default class Splash extends React.Component {
 						overlay={<SplashOverlay />}
 						overlayContentStyle={inlineStyles.overlay}
 					>
-						<img src="images/pi-ad2-blend.jpg" />
+						<img src={image} />
 					</CardMedia>
 				</Card>
 			</Link>
