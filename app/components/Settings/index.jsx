@@ -140,101 +140,101 @@ export default class Settings extends React.Component {
         let color = ('light' == this.context.theme) ? grey900 : grey100;
 
         return (
-                <Card style={inlineStyles.card}>
-                    <Link to="/app" onClick={this.spinsOff}>
-                        <IconButton style={inlineStyles.icon}>
-                            <ArrowBackIcon fill={color} />
-                        </IconButton>
-                    </Link>
+            <Card style={inlineStyles.card}>
+                <Link to="/app" onClick={this.spinsOff}>
+                    <IconButton style={inlineStyles.icon}>
+                        <ArrowBackIcon fill={color} />
+                    </IconButton>
+                </Link>
 
-                    <CardTitle
-                        title="Theme"
-                        titleStyle={inlineStyles.sectionTitle}
-                        style={inlineStyles.section}
+                <CardTitle
+                    title="Theme"
+                    titleStyle={inlineStyles.sectionTitle}
+                    style={inlineStyles.section}
+                />
+                <RadioButtonGroup
+                    name="theme"
+                    onChange={this.handleTheme}
+                    valueSelected={this.state.theme}
+                    style={inlineStyles.radioGroup}
+                >
+                    <RadioButton
+                        value="light"
+                        label="Light"
+                        style={inlineStyles.radio}
+                        inputStyle={inlineStyles.radioInput}
+                        labelStyle={inlineStyles.radioLabel}
                     />
-                    <RadioButtonGroup
-                        name="theme"
-                        onChange={this.handleTheme}
-                        valueSelected={this.state.theme}
-                        style={inlineStyles.radioGroup}
-                    >
-                        <RadioButton
-                            value="light"
-                            label="Light"
-                            style={inlineStyles.radio}
-                            inputStyle={inlineStyles.radioInput}
-                            labelStyle={inlineStyles.radioLabel}
-                        />
-                        <RadioButton
-                            value="dark"
-                            label="Dark"
-                            style={inlineStyles.radio}
-                            inputStyle={inlineStyles.radioInput}
-                            labelStyle={inlineStyles.radioLabel}
-                        />
-                    </RadioButtonGroup>
+                    <RadioButton
+                        value="dark"
+                        label="Dark"
+                        style={inlineStyles.radio}
+                        inputStyle={inlineStyles.radioInput}
+                        labelStyle={inlineStyles.radioLabel}
+                    />
+                </RadioButtonGroup>
 
-                    <CardTitle
-                        title="Default Distance Mesurement System"
-                        subtitle="Can always change on-the-fly in the timer."
-                        titleStyle={inlineStyles.sectionTitle}
-                        subtitleStyle={inlineStyles.sectionSubTitle}
-                        style={inlineStyles.section}
+                <CardTitle
+                    title="Default Distance Mesurement System"
+                    subtitle="Can always change on-the-fly in the timer."
+                    titleStyle={inlineStyles.sectionTitle}
+                    subtitleStyle={inlineStyles.sectionSubTitle}
+                    style={inlineStyles.section}
+                />
+                <RadioButtonGroup
+                    name="metric"
+                    onChange={this.handleMetric}
+                    valueSelected={this.state.metric}
+                    style={inlineStyles.radioGroup}
+                >
+                    <RadioButton
+                        value={true}
+                        label="km"
+                        style={inlineStyles.radio}
+                        inputStyle={inlineStyles.radioInput}
+                        labelStyle={inlineStyles.radioLabel}
                     />
-                    <RadioButtonGroup
-                        name="metric"
-                        onChange={this.handleMetric}
-                        valueSelected={this.state.metric}
-                        style={inlineStyles.radioGroup}
-                    >
-                        <RadioButton
-                            value={true}
-                            label="km"
-                            style={inlineStyles.radio}
-                            inputStyle={inlineStyles.radioInput}
-                            labelStyle={inlineStyles.radioLabel}
-                        />
-                        <RadioButton
-                            value={false}
-                            label="Miles"
-                            style={inlineStyles.radio}
-                            inputStyle={inlineStyles.radioInput}
-                            labelStyle={inlineStyles.radioLabel}
-                        />
-                    </RadioButtonGroup>
+                    <RadioButton
+                        value={false}
+                        label="Miles"
+                        style={inlineStyles.radio}
+                        inputStyle={inlineStyles.radioInput}
+                        labelStyle={inlineStyles.radioLabel}
+                    />
+                </RadioButtonGroup>
 
-                    <CardTitle
-                        title="Spin Detection"
-                        subtitle="Start pedaling & adjust until spins are being shown to the right."
-                        titleStyle={inlineStyles.sectionTitle}
-                        subtitleStyle={inlineStyles.sectionSubTitle}
-                        style={_.merge({}, inlineStyles.section, inlineStyles.spinSection)}
-                    />
-                    <CircularProgress
-                        mode="determinate"
-                        value={this.state.spinProgress}
-                        max={10}
-                        style={inlineStyles.progress}
-                    />
-                    <Slider
-                        step={0.05}
-                        value={this.state.clapDetectorEnergy}
-                        name="clapDetectorEnergy"
-                        min={0.1}
-                        max={1}
-                        onChange={this.handleEnergy}
-                        sliderStyle={inlineStyles.slider}
-                    />
-                    <Slider
-                        step={0.05}
-                        value={this.state.clapDetectorAmplitude}
-                        name="clapDetectorAmplitude"
-                        min={0.1}
-                        max={1}
-                        onChange={this.handleAmplitude}
-                        sliderStyle={inlineStyles.slider}
-                    />
-                </Card>
+                <CardTitle
+                    title="Spin Detection"
+                    subtitle="Start pedaling & adjust until spins are being shown to the right."
+                    titleStyle={inlineStyles.sectionTitle}
+                    subtitleStyle={inlineStyles.sectionSubTitle}
+                    style={_.merge({}, inlineStyles.section, inlineStyles.spinSection)}
+                />
+                <CircularProgress
+                    mode="determinate"
+                    value={this.state.spinProgress}
+                    max={10}
+                    style={inlineStyles.progress}
+                />
+                <Slider
+                    step={0.05}
+                    value={this.state.clapDetectorEnergy}
+                    name="clapDetectorEnergy"
+                    min={0.1}
+                    max={1}
+                    onChange={this.handleEnergy}
+                    sliderStyle={inlineStyles.slider}
+                />
+                <Slider
+                    step={0.05}
+                    value={this.state.clapDetectorAmplitude}
+                    name="clapDetectorAmplitude"
+                    min={0.1}
+                    max={1}
+                    onChange={this.handleAmplitude}
+                    sliderStyle={inlineStyles.slider}
+                />
+            </Card>
         );
     }
 }

@@ -30,14 +30,14 @@ export default class Container extends React.Component {
         });
 
         socket.on('themeChange', (theme) => {
-           this.setState({theme: theme})
+            this.setState({theme: theme})
         });
     }
 
     render() {
         return (
             <MuiThemeProvider muiTheme={getMuiTheme(('dark' == this.state.theme) ? darkBaseTheme : lightBaseTheme)}>
-               {this.props.children}
+                {this.props.children}
             </MuiThemeProvider>
         );
     }

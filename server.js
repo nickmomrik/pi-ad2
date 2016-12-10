@@ -19,36 +19,36 @@ let chromium = null;
 const clapDetector = require('clap-detector');
 
 if (isDeveloping) {
-  const compiler = webpack(config);
-  const middleware = webpackMiddleware(compiler, {
-    publicPath: config.output.publicPath,
-    contentBase: 'src',
-    stats: {
-      colors: true,
-      hash: false,
-      timings: true,
-      chunks: false,
-      chunkModules: false,
-      modules: false
-    }
-  });
+    const compiler = webpack(config);
+    const middleware = webpackMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+        contentBase: 'src',
+        stats: {
+            colors: true,
+            hash: false,
+            timings: true,
+            chunks: false,
+            chunkModules: false,
+            modules: false
+        }
+    });
 
-  app.use(express.static(path.join(__dirname, 'app', 'public')));
-  app.use(middleware);
-  app.use(webpackHotMiddleware(compiler));
+    app.use(express.static(path.join(__dirname, 'app', 'public')));
+    app.use(middleware);
+    app.use(webpackHotMiddleware(compiler));
 
-  // Declare API routes before '*'
-  app.get('/api/config/:option', function(req, res) {
-      let value = null;
+    // Declare API routes before '*'
+    app.get('/api/config/:option', function(req, res) {
+        let value = null;
 
-      if ('all' == req.params.option) {
-          value = CONFIG;
-      } else if (req.params.option in CONFIG) {
-          value = CONFIG[req.params.option];
-      }
+        if ('all' == req.params.option) {
+            value = CONFIG;
+        } else if (req.params.option in CONFIG) {
+            value = CONFIG[req.params.option];
+        }
 
-      res.send(value);
-  });
+        res.send(value);
+    });
     app.post('/api/config/:option', multer.array(), function (req, res, next) {
         if (!req.body) {
             return res.sendStatus(400)
@@ -76,10 +76,10 @@ if (isDeveloping) {
         }
     });
 
-  app.get('/', function response(req, res) {
-    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
-    res.end();
-  });
+    app.get('/', function response(req, res) {
+        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+        res.end();
+    });
 
     if (isLinux) {
         middleware.waitUntilValid(function () {
@@ -91,23 +91,23 @@ if (isDeveloping) {
         });
     }
 } else {
-  app.use(express.static(__dirname + '/dist'));
+    app.use(express.static(__dirname + '/dist'));
 
-  // Declare API routes before '*'
-  app.get('/api/config', function(req, res) {
-    res.json(CONFIG);
-  });
+    // Declare API routes before '*'
+    app.get('/api/config', function(req, res) {
+        res.json(CONFIG);
+    });
 
-  app.get('*', function response(req, res) {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
-  });
+    app.get('*', function response(req, res) {
+        res.sendFile(path.join(__dirname, 'dist/index.html'));
+    });
 }
 
 const http = app.listen(port, function onStart(err) {
-  if (err) {
-    console.log(err);
-  }
-  console.info('==> Listening on port %s.', port);
+    if (err) {
+        console.log(err);
+    }
+    console.info('==> Listening on port %s.', port);
 });
 
 const io = require('socket.io')(http);
@@ -119,8 +119,8 @@ io.on('connection', function(socket) {
         debug('exit');
 
         if (isLinux && chromium) {
-          debug('Kill chromium on Linux');
-          chromium.kill('SIGINT');
+            debug('Kill chromium on Linux');
+            chromium.kill('SIGINT');
         }
 
         io.close();
