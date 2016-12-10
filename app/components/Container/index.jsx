@@ -8,37 +8,37 @@ import Config from 'utils/Config.js';
 const socket = io();
 
 export default class Container extends React.Component {
-    constructor(props) {
-        super(props);
+	constructor(props) {
+		super(props);
 
-        this.state = {
-            theme: 'light',
-        };
-    }
+		this.state = {
+			theme: 'light',
+		};
+	}
 
-    static childContextTypes = {
-        theme: React.PropTypes.string
-    };
+	static childContextTypes = {
+		theme: React.PropTypes.string
+	};
 
-    getChildContext() {
-        return {theme: this.state.theme};
-    }
+	getChildContext() {
+		return {theme: this.state.theme};
+	}
 
-    componentWillMount() {
-        Config.get('theme', (value) => {
-            this.setState({theme: value})
-        });
+	componentWillMount() {
+		Config.get('theme', (value) => {
+			this.setState({theme: value})
+		});
 
-        socket.on('themeChange', (theme) => {
-            this.setState({theme: theme})
-        });
-    }
+		socket.on('themeChange', (theme) => {
+			this.setState({theme: theme})
+		});
+	}
 
-    render() {
-        return (
-            <MuiThemeProvider muiTheme={getMuiTheme(('dark' == this.state.theme) ? darkBaseTheme : lightBaseTheme)}>
-                {this.props.children}
-            </MuiThemeProvider>
-        );
-    }
+	render() {
+		return (
+			<MuiThemeProvider muiTheme={getMuiTheme(('dark' == this.state.theme) ? darkBaseTheme : lightBaseTheme)}>
+				{this.props.children}
+			</MuiThemeProvider>
+		);
+	}
 }
