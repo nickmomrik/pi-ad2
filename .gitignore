@@ -41,6 +41,3 @@ jspm_packages
 
 # File used by clap-detector
 input.wav
-
-# build
-dist
