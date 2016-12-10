@@ -65,7 +65,7 @@ let Config = (function() {
 		settings: function(configPath) {
 			let settings = defaults;
 			if (fs.existsSync(path.join(configPath, customConfigFile))) {
-				_.assign(settings, Config.cast(require(path.join(configPath, customConfigFile))));
+				_.assign(settings, Config.cast(JSON.parse(fs.readFileSync(path.join(configPath, customConfigFile), 'utf8'))));
 			}
 
 			return settings;
