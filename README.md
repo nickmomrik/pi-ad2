@@ -31,12 +31,6 @@ When using the app, take the cable out of the Airdyne monitor and use a USB soun
    git clone https://github.com/nickmomrik/pi-ad2.git
    ```
 1. Here are some different ways to start the app:
-    1. Mac or Linux (from inside the install directory)
-
-        ```bash
-        npm run prod
-        ```
-        Copy the URL it gives you back and open the page in your browser. Linux will attempt to launch Chromium for you.
     1. Linux only: If you would like a desktop shortcut for launching the app:
 
         ```bash
@@ -47,6 +41,12 @@ When using the app, take the cable out of the Airdyne monitor and use a USB soun
         ```bash
         ./misc/linux-setup-launch-on-boot.sh
         ```
+    1. Mac or Linux (from inside the `pi-ad2` install directory)
+
+        ```bash
+        npm run prod
+        ```
+        Copy the URL it gives you back and open the page in your browser. Linux will attempt to launch Chromium for you.
 1. The first time you use the app, make sure to go to Settings and test it is recognizing flywheel rotations. You may need to adjust the sliders until you find a sweet spot.
 
 ## Other useful install/config items
