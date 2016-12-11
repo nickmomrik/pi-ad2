@@ -15,6 +15,6 @@ cat > ~/Desktop/pi-ad2.desktop << EOF2
 Type=Application
 Name=Pi AD2
 Comment=Launch Pi-AD2
-Exec=$launch
+Exec=lxterminal -e $launch
 Icon=$dir/misc/timer.svg
 EOF2

@@ -10,5 +10,5 @@ EOF1
 
 chmod 744 $launch
 
-launch=@$launch
-echo $launch | sudo tee --append /etc/xdg/lxsession/LXDE-pi/autostart > /dev/null
+pre='@lxterminal -e '
+echo $pre$launch | tee --append ~/.config/lxsession/LXDE-pi/autostart > /dev/null
