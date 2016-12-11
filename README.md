@@ -34,6 +34,7 @@ When using the app, take the cable out of the Airdyne monitor and use a USB soun
     1. Linux only (will give you Desktop & boot options):
 
         ```bash
+        cd pi-ad2
         ./misc/install.sh
         ```
     1. Mac or Linux (from inside the `pi-ad2` install directory)
