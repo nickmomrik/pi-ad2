@@ -1,11 +1,14 @@
 #!/bin/bash
 
 dir=$(pwd -P)
-dir=${dir%\/misc}
+launch=$dir/dist/launch.sh
 
-cat > $dir/dist/launch.sh << EOF1
+cat > $launch << EOF1
 cd $dir
-npm start prod
+npm run prod
 EOF1
 
-echo '*** Edit a file... `sudo nano /etc/xdg/lxsession/LXDE-pi/autostart`, add `@$dir/dist/launch.sh`, and save.'
+chmod 744 $launch
+
+launch=@$launch
+echo $launch | sudo tee --append /etc/xdg/lxsession/LXDE-pi/autostart > /dev/null

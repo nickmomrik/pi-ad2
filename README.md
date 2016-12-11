@@ -11,11 +11,14 @@ When using the app, take the cable out of the Airdyne monitor and use a USB soun
 ## Installation
 1. Install [Node.js](https://nodejs.org/en/download/package-manager/)
 1. Install `sox`, a sound processing program, which is used to "listen" for each rotation of the flywheel.
+
     ##### Linux
+
     ```bash
     sudo apt-get update
     sudo apt-get install sox
     ```
+
     ##### Mac OS X
     Install [Homebrew](http://brew.sh/) first and then sox.
     ```bash
@@ -35,12 +38,14 @@ When using the app, take the cable out of the Airdyne monitor and use a USB soun
         ```
         Copy the URL it gives you back and open the page in your browser. Linux will attempt to launch Chromium for you.
     1. Linux only: If you would like a desktop shortcut for launching the app:
+
         ```bash
-        ./linux-create-desktop-shortcut.sh
+        ./misc/linux-create-desktop-shortcut.sh
         ```
     1. Linux only: To make the app launch on boot:
+
         ```bash
-        ./linux-setup-launch-on-boot.sh
+        ./misc/linux-setup-launch-on-boot.sh
         ```
 1. The first time you use the app, make sure to go to Settings and test it is recognizing flywheel rotations. You may need to adjust the sliders until you find a sweet spot.
 
