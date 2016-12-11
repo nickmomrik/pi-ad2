@@ -8,17 +8,17 @@ import Settings from 'components/Settings';
 import Exit from 'components/Exit';
 
 export default class App extends React.Component {
-    render() {
-      return (
-          <Router history={hashHistory}>
-              <Route path='/' component={Container}>
-                  <IndexRoute component={Splash} />
-                  <Route path='/app' component={MainMenu} />
-                  <Route path='/timer' component={Timer} />
-                  <Route path="/settings" component={Settings} />
-                  <Route path="/exit" component={Exit} />
-              </Route>
-          </Router>
-      );
-    }
+	render() {
+		return (
+			<Router history={hashHistory}>
+				<Route path='/' component={Container}>
+					<IndexRoute component={Splash} />
+					<Route path='/app' component={MainMenu} />
+					<Route path='/timer' component={Timer} />
+					<Route path="/settings" component={Settings} />
+					<Route path="/exit" component={Exit} />
+				</Route>
+			</Router>
+		);
+	}
 }

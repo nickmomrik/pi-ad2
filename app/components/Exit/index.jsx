@@ -5,17 +5,17 @@ import {Card, CardTitle} from 'material-ui/Card';
 const socket = io();
 
 export default class Exit extends React.Component {
-    componentDidMount() {
-        socket.emit('exit');
+	componentDidMount() {
+		socket.emit('exit');
 
-        socket.disconnect();
-    }
+		socket.disconnect();
+	}
 
-    render() {
-        return (
-            <Card>
-                <CardTitle title="All done" subtitle="Restart the app to continue" />
-            </Card>
-        );
-    }
+	render() {
+		return (
+			<Card>
+				<CardTitle title="All done" subtitle="Restart the app to continue" />
+			</Card>
+		);
+	}
 }

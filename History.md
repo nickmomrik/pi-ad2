@@ -1,3 +1,12 @@
+1.2.3 / 2016-12-10
+==================
+
+  * Removed dependency on forked version of `clap-detector`
+  * Switch to Genericons Neue for in-app icons.
+  * A lot of code cleanup.
+  * Removed default config file and moved location of custom config.
+  * Production build and a proper install process with launch options.
+
 1.2.2 / 2016-12-01
 ==================
 
