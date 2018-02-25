@@ -68,7 +68,7 @@ module.exports = {
 			'.js',
 			'.jsx',
 		],
-		modulesDirectories: [
+		modules: [
 			'node_modules',
 			'./app',
 		],
