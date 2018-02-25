@@ -29,34 +29,64 @@ module.exports = {
 		})
 	],
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				loader: 'babel',
-				query: {
-					"presets": [
-						"es2015",
-						"stage-0",
-						"react",
-					],
-				}
+				use: [
+					{
+						loader: "babel",
+						options: {
+							presets: [
+								"react",
+								"es2015",
+								"stage-0",
+								"react-hmre",
+							],
+						},
+					},
+				],
 			}, {
-				test: /\.json?$/,
-				loader: 'json',
-			}, {
-				test: /\.scss$/,
-				loaders: [
-					'style',
-					'css',
-					'sass',
+				test: /\.json$/,
+				use: [
+					{
+						loader: "json",
+					},
 				],
 			}, {
 				test: /\.css$/,
-				loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss!sass')
+				use: [
+					{
+						loader: "style",
+					},
+					{
+						loader: "css-loader",
+						options: {
+							modules: true,
+							localIdentName: "[name]---[local]---[hash:base64:5]",
+						},
+					},
+				],
+			}, {
+				test: /\.scss$/,
+				use: [
+					{
+						loader: "style",
+					},
+					{
+						loader: "css",
+					},
+					{
+						loader: "sass",
+					}
+				],
 			}, {
 				test: /\.jpe?g$/,
-				loader: 'file',
+				use: [
+					{
+						loader: "file",
+					},
+				],
 			},
 		],
 	},

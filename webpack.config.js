@@ -28,39 +28,64 @@ module.exports = {
 		}),
 	],
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				loader: 'babel',
-				query: {
-					"presets": [
-						"react",
-						"es2015",
-						"stage-0",
-						"react-hmre",
-					],
-				},
+				use: [
+					{
+						loader: "babel",
+						options: {
+							presets: [
+								"react",
+								"es2015",
+								"stage-0",
+								"react-hmre",
+							],
+						},
+					},
+				],
 			}, {
 				test: /\.json$/,
-				loader: 'json',
+				use: [
+					{
+						loader: "json",
+					},
+				],
 			}, {
 				test: /\.css$/,
-				loaders: [
-					'style',
-					'css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
-					'sass',
+				use: [
+					{
+						loader: "style",
+					},
+					{
+						loader: "css-loader",
+						options: {
+							modules: true,
+							localIdentName: "[name]---[local]---[hash:base64:5]",
+						},
+					},
 				],
 			}, {
 				test: /\.scss$/,
-				loaders: [
-					'style',
-					'css',
-					'sass',
+				use: [
+					{
+						loader: "style",
+					},
+					{
+						loader: "css",
+					},
+					{
+						loader: "sass",
+					}
 				],
 			}, {
 				test: /\.jpe?g$/,
-				loader: 'file',
+				use: [
+					{
+						loader: "file",
+					},
+				],
 			},
 		],
 	},
