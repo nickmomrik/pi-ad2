@@ -38,7 +38,7 @@ module.exports = {
 						options: {
 							presets: [
 								"react",
-								"es2015",
+								"env",
 								"stage-0",
 								"react-hmre",
 							],
