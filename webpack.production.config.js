@@ -12,7 +12,6 @@ module.exports = {
 		filename: 'client-[hash].min.js',
 	},
 	plugins: [
-		new webpack.optimize.OccurrenceOrderPlugin(),
 		new HtmlWebpackPlugin({
 			template: 'app/index.tpl.html',
 			inject: 'body',
