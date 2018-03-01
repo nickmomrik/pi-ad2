@@ -49,14 +49,14 @@ module.exports = {
 				test: /\.json$/,
 				use: [
 					{
-						loader: "json",
+						loader: "json-loader",
 					},
 				],
 			}, {
 				test: /\.css$/,
 				use: [
 					{
-						loader: "style",
+						loader: "style-loader",
 					},
 					{
 						loader: "css-loader",
@@ -70,20 +70,20 @@ module.exports = {
 				test: /\.scss$/,
 				use: [
 					{
-						loader: "style",
+						loader: "style-loader",
 					},
 					{
-						loader: "css",
+						loader: "css-loader",
 					},
 					{
-						loader: "sass",
+						loader: "sass-loader",
 					}
 				],
 			}, {
 				test: /\.jpe?g$/,
 				use: [
 					{
-						loader: "file",
+						loader: "file-loader",
 					},
 				],
 			},
