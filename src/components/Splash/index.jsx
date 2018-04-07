@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router';
 import {Card, CardMedia} from 'material-ui/Card';
-import SplashOverlay from 'components/Splash/SplashOverlay';
-const image = require('images/pi-ad2-blend.jpg');
+import SplashOverlay from './SplashOverlay.jsx';
+const image = require('../../images/pi-ad2-blend.jpg');
 
 const inlineStyles = {
 	overlay: {

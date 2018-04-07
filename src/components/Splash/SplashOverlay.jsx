@@ -2,7 +2,7 @@ import React from 'react';
 import {CardTitle, CardHeader} from 'material-ui/Card';
 import {grey200, grey400} from 'material-ui/styles/colors';
 const pkg = require('../../../package.json');
-const image = require('images/nick-momrik.jpeg');
+const image = require('../../images/nick-momrik.jpeg');
 
 export default class SplashOverlay extends React.Component {
 	render() {

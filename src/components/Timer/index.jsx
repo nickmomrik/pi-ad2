@@ -9,7 +9,7 @@ import {Card, CardTitle} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import Config from 'utils/Config.js';
+import Config from '../../utils/Config.js';
 import classNames from 'classnames';
 import _ from 'lodash';
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import {Router, Route, hashHistory, IndexRoute} from 'react-router';
-import Container from 'components/Container';
-import Splash from 'components/Splash';
-import MainMenu from 'components/MainMenu';
-import {Timer} from 'components/Timer';
-import Settings from 'components/Settings';
-import Exit from 'components/Exit';
+import Container from '../Container/index.jsx';
+import Splash from '../Splash/index.jsx';
+import MainMenu from '../MainMenu/index.jsx';
+import {Timer} from '../Timer/index.jsx';
+import Settings from '../Settings/index.jsx';
+import Exit from '../Exit/index.jsx';
 
 export default class App extends React.Component {
 	render() {

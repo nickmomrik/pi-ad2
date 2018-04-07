@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const os = require('os');
 const path = require('path');
-const Config = require('./app/utils/Config');
+const Config = require('./src/utils/Config');
 const configPath = path.join(os.homedir(), '.pi-ad2');
 let CONFIG = Config.settings(configPath);
 const express = require('express');

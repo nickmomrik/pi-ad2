@@ -1,98 +1,36 @@
-'use strict';
-
-let path = require('path');
-let webpack = require('webpack');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-	devtool: 'eval-source-map',
-	entry: [
-		'webpack-hot-middleware/client?reload=true',
-		path.join(__dirname, 'app/main.jsx'),
-	],
+	entry: './src/index.js',
 	output: {
-		path: path.join(__dirname, '/dist/'),
-		filename: '[name].js',
-		publicPath: path.join(__dirname, 'app', 'public'),
+		publicPath: path.join( __dirname, 'src', 'public' )
 	},
-	plugins: [
-		new HtmlWebpackPlugin({
-			template: 'app/index.tpl.html',
-			inject: 'body',
-			filename: 'index.html',
-		}),
-		new webpack.HotModuleReplacementPlugin(),
-		new webpack.NoEmitOnErrorsPlugin(),
-		new webpack.DefinePlugin({
-			'process.env.NODE_ENV': JSON.stringify('development'),
-		}),
-	],
 	module: {
 		rules: [
 			{
 				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				use: [
-					{
-						loader: "babel-loader",
-						options: {
-							presets: [
-								"react",
-								"env",
-								"stage-0",
-								"react-hmre",
-							],
-						},
-					},
-				],
-			}, {
-				test: /\.css$/,
-				use: [
-					{
-						loader: "style-loader",
-					},
-					{
-						loader: "css-loader",
-						options: {
-							modules: true,
-							localIdentName: "[name]---[local]---[hash:base64:5]",
-						},
-					},
-				],
-			}, {
-				test: /\.scss$/,
-				use: [
-					{
-						loader: "style-loader",
-					},
-					{
-						loader: "css-loader",
-					},
-					{
-						loader: "sass-loader",
-					}
-				],
-			}, {
-				test: /\.jpe?g$/,
-				use: [
-					{
-						loader: "file-loader",
-					},
-				],
+				use: {
+					loader: "babel-loader"
+				}
 			},
-		],
-	},
-	resolve: {
-		extensions: [
-			'.js',
-			'.jsx',
-		],
-		modules: [
-			'node_modules',
-			'./app',
-		],
+			{
+				test: /\.(png|jp(e*)g|svg)$/,
+				use: [{
+					loader: 'url-loader',
+					options: {
+						limit: 8000, // Convert images < 8kb to base64 strings
+						name: 'images/[hash]-[name].[ext]'
+					}
+				}]
+			},
+			{
+				test:/\.(s*)css$/,
+				use:['style-loader','css-loader', 'sass-loader']
+			}
+		]
 	},
 	node: {
-		fs: "empty",
-	},
+		fs: 'empty'
+	}
 };

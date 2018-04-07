@@ -7,7 +7,7 @@ import ArrowBackIcon from 'genericons-neue-react/icons/previous';
 import IconButton from 'material-ui/IconButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import {grey100, grey900} from 'material-ui/styles/colors';
-import Config from 'utils/Config';
+import Config from '../../utils/Config.js';
 
 const socket = io();
 
