@@ -1,4 +1,6 @@
 # Pi AD2
+*Note:* I sold my Airdyne, so will not be making any further improvements to this project. If someone wants to run with it, I fully support forking it and I'll be happy to link to your project!
+
 A replacement monitor for the Schwinn Airdyne AD2, built for a Raspberry Pi. It actually can run completely fine on a Mac as well, where I'm doing all of my development.
 
 I wrote a series of posts about the journey of creating this app. Start with [Part 1](https://nickmomrik.com/2016/11/25/building-a-better-interface-for-the-airdyne-ad2-with-a-raspberry-pi/) if you're interested.
